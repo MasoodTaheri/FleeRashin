@@ -19,6 +19,8 @@ public class DefaultPlayerPlane : MovableObject
     Wing rightWing;
     public bool readytodestroy = false;
     private gun planeGun;
+	private AudioSource sfx;
+
 
     public void StartShoot()
     {
@@ -50,6 +52,7 @@ public class DefaultPlayerPlane : MovableObject
 
 
         obj.gameObject.AddComponent<ColliderCallback>().enter += Collision;
+		sfx = obj.transform.GetChild (0).GetComponent<AudioSource> ();
 
 
 
@@ -138,6 +141,7 @@ public class DefaultPlayerPlane : MovableObject
             //Debug.Log("Star");
             GameObject.Destroy(collision.gameObject);
             uiController.Instanse.IncStarPickedup();
+			sfx.Play ();
         }
 
         if (collision.gameObject.tag == "Repair")

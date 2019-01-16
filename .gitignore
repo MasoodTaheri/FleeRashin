@@ -1,3 +1,4 @@
+////////////////////////////
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
@@ -19,13 +20,18 @@ ExportedObj/
 *.booproj
 *.svd
 
-
 # Unity3D generated meta files
 *.pidb.meta
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
+build_info.txt
+build_info.txt.meta
 
 # Builds
 *.apk
 *.unitypackage
+*.zip
+*.rar
+
+//////////////////////////////////
