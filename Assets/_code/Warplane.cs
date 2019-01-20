@@ -159,6 +159,8 @@ public class DefaultPlayerPlane : MovableObject
             }
 
         }
+
+
     }
 
     //public void winghit(bool isLeft, bool isRight, float minvalue)

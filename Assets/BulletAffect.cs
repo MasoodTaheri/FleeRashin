@@ -6,6 +6,7 @@ public class BulletAffect : MonoBehaviour
 {
     public float speed;
     public float lifelength;
+    public string Shooter;
     // Use this for initialization
     void Start()
     {
@@ -22,6 +23,13 @@ public class BulletAffect : MonoBehaviour
         Debug.LogFormat("{0} hited by {1}", other.gameObject.name, this.gameObject.name);
         //Destroy(this.gameObject);
         Destroy(this.gameObject.transform.parent.gameObject);
+        if (other.gameObject.tag == "Playerbody")
+        {
+            playermanager.PlanePlayer.destroy();
+            RocketManager.instance.expludeAt(1, transform.position);
+        }
+        if ((Shooter == "Player") && (other.gameObject.tag == "Enemy"))
+            uiController.Instanse.IncPlaneHit();
     }
 
     private void OnDestroy()

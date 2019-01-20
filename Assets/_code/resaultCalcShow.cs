@@ -9,6 +9,7 @@ public class resaultCalcShow : MonoBehaviour
     public Text timer;
     public Text Rckets;
     public Text total;
+    public Text PlaneHit;
     public Button doublestarbut;
 
 
@@ -23,10 +24,11 @@ public class resaultCalcShow : MonoBehaviour
         stars.text = uiController.Instanse.get_Stars().ToString() + "*10";
         timer.text = uiController.Instanse.get_CuTime().ToString("f1") + " S";
         Rckets.text = uiController.Instanse.get_Rockethit().ToString() + "*10";
+        PlaneHit.text = uiController.Instanse.get_PlaneHit().ToString() + "*20";
         total.text = PlayerDataClass.calcScore().ToString();
         doublestarbut.gameObject.SetActive(true);
 
-        doublestarbut.interactable = (uiController.Instanse.get_Stars() > 2);
+        //doublestarbut.interactable = (uiController.Instanse.get_Stars() > 2);
 
 
 

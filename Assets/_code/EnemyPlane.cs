@@ -114,7 +114,7 @@ public class EnemyPlane : AIPlane
 
     void OnCollisionEnter(Collision other)
     {
-        Debug.Log("EnemyPlane hit " + other.gameObject.tag);
+        //Debug.Log("EnemyPlane hit " + other.gameObject.tag);
 
         if (other.gameObject.tag == "Star")
         {
@@ -136,6 +136,9 @@ public class EnemyPlane : AIPlane
     private void OnDestroy()
     {
         RocketManager.instance.expludeAt(1, transform.position);
+        //if (Vector3.Distance(playermanager.PlanePlayer.obj.transform.position
+        //    , transform.position) < 10)
+            //uiController.Instanse.IncPlaneHit();
     }
 
 }

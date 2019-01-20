@@ -13,17 +13,21 @@ public class uiController : MonoBehaviour
     private Text timer;
     [SerializeField]
     private Text StarCounter;
-    [SerializeField]
-    private Text RocketHitLabel;
+	[SerializeField]
+	private Text RocketHitLabel;
+	[SerializeField]
+	private Text PlaneHitLabel;
 
 
     private float CuTime;
     private int Stars;
     private int Rockethit;
+	private int PlaneHit;
     float t = 0;
     public float get_CuTime() { return CuTime; }
     public int get_Stars() { return Stars; }
     public float get_Rockethit() { return Rockethit; }
+    public float get_PlaneHit() { return PlaneHit; }
 
     // Use this for initialization
     void Start()
@@ -62,14 +66,24 @@ public class uiController : MonoBehaviour
         RocketHitLabel.text = Rockethit.ToString();
     }
 
+
+	public void IncPlaneHit()
+	{
+		PlaneHit++;
+		PlaneHitLabel.text = PlaneHit.ToString();
+	}
+
+
     public void resetUIelements()
     {
         Stars = 0;
         CuTime = 0;
         Rockethit = 0;
+        PlaneHit = 0;
         StarCounter.text = Stars.ToString();
         timer.text = CuTime.ToString("f1");
         RocketHitLabel.text = Rockethit.ToString();
+		PlaneHitLabel.text = PlaneHit.ToString ();
         t = Time.time;
     }
 

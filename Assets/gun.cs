@@ -37,7 +37,7 @@ public class gun : MonoBehaviour
             if (t0 > Shootdelay)
             {
                 //gunobj.Shoot(-1);
-                gunobj.Shoot(++gunId % 2);
+                gunobj.Shoot(++gunId % 2, "Player");
                 //if (t0 > Shootdelay + ShootLength)
                 t0 = 0;
                 aus.Play();

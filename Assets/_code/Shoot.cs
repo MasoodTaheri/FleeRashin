@@ -11,7 +11,7 @@ public abstract class ShootClass
     public float speed;
     public float lifeLength;
     //public float decreaseHealth;
-    public abstract void Shoot(int SpawnerId);
+    public abstract void Shoot(int SpawnerId, string shooter = "");
     public abstract void Update();
     public List<GameObject> Spawner;
     protected void addBulletToList(GameObject bullet)
@@ -42,16 +42,16 @@ public class MachineGun : ShootClass
     public MachineGun()
     { if (bulltes == null) bulltes = new List<GameObject>(); }
 
-    public override void Shoot(int spawnerID)
+    public override void Shoot(int spawnerID,string shooter="")
     {
         if (spawnerID != -1)
-            ShootFromId(spawnerID);
+            ShootFromId(spawnerID, shooter);
         else
             for (int i = 0; i < Spawner.Count; i++)
-                ShootFromId(i);
+                ShootFromId(i, shooter);
     }
 
-    private void ShootFromId(int id)
+    private void ShootFromId(int id, string shooter = "")
     {
         GameObject tmp = GameObject.Instantiate(bulletPrefab, Spawner[id].transform.position
     , Spawner[id].transform.rotation) as GameObject;
@@ -59,6 +59,7 @@ public class MachineGun : ShootClass
         //Debug.Log(speed + "  " + lifeLength);
         tmp.transform.Find("Capsule").GetComponent<BulletAffect>().speed = speed;
         tmp.transform.Find("Capsule").GetComponent<BulletAffect>().lifelength = lifeLength;
+        tmp.transform.Find("Capsule").GetComponent<BulletAffect>().Shooter = shooter;
 
         addBulletToList(tmp);
 
