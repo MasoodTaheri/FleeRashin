@@ -49,7 +49,7 @@ public class IAPandAD : MonoBehaviour
         {
             uiController.Instanse.DoubleStar();
             resaultCalcShow.instance.OnEnable();
-            resaultCalcShow.instance.doublestarbut.enabled = false;
+            //resaultCalcShow.instance.doublestarbut.enabled = false;
         }
 
         if (whyad == "getstar")
@@ -72,7 +72,7 @@ public class IAPandAD : MonoBehaviour
             {
                 uiController.Instanse.DoubleStar();
                 resaultCalcShow.instance.OnEnable();
-                resaultCalcShow.instance.doublestarbut.enabled = false;
+                //resaultCalcShow.instance.doublestarbut.enabled = false;
 
             }
             if (whyad == "getflare")

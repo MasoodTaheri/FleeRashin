@@ -26,7 +26,7 @@ public class resaultCalcShow : MonoBehaviour
         Rckets.text = uiController.Instanse.get_Rockethit().ToString() + "*10";
         PlaneHit.text = uiController.Instanse.get_PlaneHit().ToString() + "*20";
         total.text = PlayerDataClass.calcScore().ToString();
-        doublestarbut.gameObject.SetActive(true);
+        //doublestarbut.gameObject.SetActive(true);
 
         //doublestarbut.interactable = (uiController.Instanse.get_Stars() > 2);
 

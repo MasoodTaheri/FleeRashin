@@ -88,6 +88,9 @@ public class Rocket : MovableObject
 
         if (collision.gameObject.tag == "Rocket")
             uiController.Instanse.IncRockethit();
+
+        if (collision.gameObject.tag == "bullet")
+            uiController.Instanse.IncRockethit();
     }
     Vector3 spawnpos()
     {

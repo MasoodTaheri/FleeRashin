@@ -2970,6 +2970,8 @@ MonoBehaviour:
     prefab: {fileID: 1000010782257932, guid: a0968920f9f288545acc1acd12a5e5c6, type: 2}
   - tag: Rocket
     prefab: {fileID: 1000010782257932, guid: 483ec6d9bc037cc45be5a80b4de70e68, type: 2}
+  - tag: bullet
+    prefab: {fileID: 1000010782257932, guid: 483ec6d9bc037cc45be5a80b4de70e68, type: 2}
   RocketCount: 1
   rotateSpeed: 1
   forwardSpeed: 3
