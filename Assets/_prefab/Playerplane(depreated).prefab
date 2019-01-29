@@ -31,6 +31,11 @@ Prefab:
       propertyPath: m_Volume
       value: 0.75
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 243233440513625590, guid: 470aafc3cd2366049976948d87935756,
+        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1000012453287734}
@@ -66,7 +71,7 @@ GameObject:
   - component: {fileID: 114137586908096264}
   - component: {fileID: 82271468350478616}
   m_Layer: 0
-  m_Name: Playerplane
+  m_Name: Playerplane(depreated)
   m_TagString: Playerbody
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -464,7 +469,8 @@ AudioSource:
   m_GameObject: {fileID: 1000012453287734}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 243233440513625590, guid: 470aafc3cd2366049976948d87935756,
+    type: 2}
   m_audioClip: {fileID: 8300000, guid: 98f5db324722a6c4ba3cc56a378e3ab5, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.346
@@ -559,7 +565,8 @@ AudioSource:
   m_GameObject: {fileID: 1000011666963076}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 243233440513625590, guid: 470aafc3cd2366049976948d87935756,
+    type: 2}
   m_audioClip: {fileID: 8300000, guid: 3d0e8854a95c1814ab4e3f6033978eb7, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.75

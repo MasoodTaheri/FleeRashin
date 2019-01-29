@@ -62,7 +62,8 @@ public class playermanager : MonoBehaviour
         PlanePlayer = new DefaultPlayerPlane(forwardSpeed, rotateSpeed, -1, null, playerPrefab);
         music.clip = InGameMusic[Random.Range(0, InGameMusic.Count)];
         music.Play();
-
+        if (PlayerDataClass.Flare <= 2)
+            PlayerDataClass.Flare = 3;
 
         //player = Instantiate(playerPrefab, new Vector3(0, -6, 0), Quaternion.identity) as GameObject;
         outofgame = false;

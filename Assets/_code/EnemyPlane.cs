@@ -20,7 +20,10 @@ public class EnemyPlane : AIPlane
 
     public float bulletLifeTime;
     public float bulletSpeed;
-
+    public AudioSource aus;
+    public AudioClip auc;
+    public float distancetoshoot;
+    public float distance;
 
     public override void onCollide(Collision collision)
     {
@@ -88,18 +91,28 @@ public class EnemyPlane : AIPlane
     void Update()
     {
         base.Update();
-
+        if (playermanager.PlanePlayer != null)
+            if (playermanager.PlanePlayer.obj != null)
+            {
+                distance = Vector3.Distance(playermanager.PlanePlayer.obj.transform.position, transform.position);
+                if (distance > distancetoshoot)
+                    return;
+            }
+            
         {
             if (playermanager.PlanePlayer != null)
                 if (playermanager.PlanePlayer.obj != null)
                     ang = Vector3.Dot(playermanager.PlanePlayer.obj.transform.forward
            , this.gameObject.transform.forward);
+
             if (ang > 0.5f)
             {
                 t0 += Time.deltaTime;
                 if (t0 > startShootdelay)
                 {
                     gun.Shoot(-1);
+                    aus.PlayOneShot(auc);
+
                     //if (t0 > Shootdelay + ShootLength)
                     t0 = 0;
                 }
@@ -138,7 +151,7 @@ public class EnemyPlane : AIPlane
         RocketManager.instance.expludeAt(1, transform.position);
         //if (Vector3.Distance(playermanager.PlanePlayer.obj.transform.position
         //    , transform.position) < 10)
-            //uiController.Instanse.IncPlaneHit();
+        //uiController.Instanse.IncPlaneHit();
     }
 
 }
