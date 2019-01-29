@@ -1423,7 +1423,9 @@ MonoBehaviour:
   target: {x: 0, y: 0, z: 0}
   _target: {fileID: 0}
   Bullet: {fileID: 1391449411893310, guid: 096de33241b2d8d42b635a2ae6efcd2c, type: 2}
-  gunPosObject: []
+  gunPosObject:
+  - {fileID: 1516140695008096}
+  - {fileID: 1485710654245038}
   coinCollector: 0
   fightWithPlayer: 0
   planeImage: {fileID: 212748286489954102}

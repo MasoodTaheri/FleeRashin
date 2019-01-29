@@ -38,7 +38,7 @@ public class AIManager : MonoBehaviour
 
             for (int i = 0; i < EnemyFighter.Length; i++)
                 if (EnemyFighter[i] != null)
-                    Destroy(EnemyCoincollector[i].gameObject);
+                    Destroy(EnemyFighter[i].gameObject);
 
             return;
         }

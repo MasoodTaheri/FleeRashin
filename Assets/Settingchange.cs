@@ -53,8 +53,8 @@ public class Settingchange : MonoBehaviour
 
     public void init()
     {
-        Music = PlayerPrefs.GetInt("music", 0) == 1;
-        SFX = PlayerPrefs.GetInt("sfx", 0) == 1;
+        Music = PlayerPrefs.GetInt("music",1) == 1;
+        SFX = PlayerPrefs.GetInt("sfx", 1) == 1;
         //if (Musicanim != null)
             SettingChange(Musicanim, "on", Music);
 
