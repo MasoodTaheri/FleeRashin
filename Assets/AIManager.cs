@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class AIManager : MonoBehaviour
 {
     public GameObject enemyPrefab;
+    public GameObject FighterPrefab;
     public GameObject iconPrefab;
     private GameObject[] EnemyCoincollector;
     private Image[] EnemyIconCoincollector;
@@ -84,7 +85,8 @@ public class AIManager : MonoBehaviour
     private void InstatiateAI(bool coinCollector, bool fighter, int ArrayId)
     {
         //Enemy = Instantiate(enemyPrefab, new Vector3(-7.78f, -6, 0.27f), Quaternion.identity);
-        GameObject Enemy = Instantiate(enemyPrefab, Vector3.zero, Quaternion.identity);
+
+        GameObject Enemy = Instantiate(fighter ? FighterPrefab : enemyPrefab, Vector3.zero, Quaternion.identity);
         Enemy.transform.position = new Vector3(Random.Range(-50, 50), -6, Random.Range(-50, 50));
         GameObject tmp = Instantiate(iconPrefab) as GameObject;
         Image icon = tmp.GetComponent<Image>();

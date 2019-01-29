@@ -98,7 +98,7 @@ public class EnemyPlane : AIPlane
                 if (distance > distancetoshoot)
                     return;
             }
-            
+
         {
             if (playermanager.PlanePlayer != null)
                 if (playermanager.PlanePlayer.obj != null)
@@ -125,7 +125,7 @@ public class EnemyPlane : AIPlane
 
     }
 
-    void OnCollisionEnter(Collision other)
+    protected void OnCollisionEnter(Collision other)
     {
         //Debug.Log("EnemyPlane hit " + other.gameObject.tag);
 
