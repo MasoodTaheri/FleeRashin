@@ -83,7 +83,7 @@ public class playermanager : MonoBehaviour
     IEnumerator result_ad()
     {
         yield return new WaitForSeconds(2f);
-        IAPandAD.showad("");
+        //IAPandAD.showad("");
     }
 
 

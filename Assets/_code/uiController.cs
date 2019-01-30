@@ -120,7 +120,7 @@ public class uiController : MonoBehaviour
 
         if (id == 4)
         {//video for flare
-            IAPandAD.showad("getstar");
+            //IAPandAD.showad("getstar");
         }
 
         PlayerDataClass.writedata();
