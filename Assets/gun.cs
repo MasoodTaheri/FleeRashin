@@ -47,29 +47,17 @@ public class gun : MonoBehaviour //MonoBehaviourPun, IPunObservable
             t0 += Time.deltaTime;
             if (t0 > Shootdelay)
             {
-                ////Debug.Log("2222");
-                ////gunobj.Shoot(-1);
-                ////gunobj.Shoot(++gunId % 2, "Player");
-                //GameObject Bullet1 = Instantiate(Bullet) as GameObject;
-                ////Bullet1.transform.position = gunPosObject[0].transform.position;
-                ////Bullet1.transform.rotation = gunPosObject[0].transform.rotation;
-                //Bullet1.GetComponent<BulletCode>().Initalize(
-                //    null, bulletSpeed, bulletLifeTime, gunPosObject[++gunId % 2].transform.position
-                //    , gunPosObject[gunId % 2].transform.rotation);
-
-                ////if (t0 > Shootdelay + ShootLength)
-                //Debug.Log("calling RPC Fire");
-                pv.RPC("Fire", RpcTarget.All);
-                t0 = 0;
-                aus.Play();
+                firebullet();
             }
         }
         //gunobj.Update();
     }
 
-    private void  firebullet()
+    private void firebullet()
     {
-
+        pv.RPC("Fire", RpcTarget.All);
+        t0 = 0;
+        aus.Play();
     }
 
     [PunRPC]
@@ -78,9 +66,9 @@ public class gun : MonoBehaviour //MonoBehaviourPun, IPunObservable
         float lag = (float)(PhotonNetwork.Time - info.SentServerTime);
 
         GameObject Bullet1 = Instantiate(Bullet) as GameObject;
-        //Bullet1.transform.position = gunPosObject[0].transform.position;
-        //Bullet1.transform.rotation = gunPosObject[0].transform.rotation;
         Bullet1.GetComponent<BulletCode>().Initalize(pv.Owner, bulletSpeed, bulletLifeTime, gunPosObject[0].transform.position, gunPosObject[0].transform.rotation, Mathf.Abs(lag), damage);
+
+        Bullet1 = Instantiate(Bullet) as GameObject;
         Bullet1.GetComponent<BulletCode>().Initalize(pv.Owner, bulletSpeed, bulletLifeTime, gunPosObject[1].transform.position, gunPosObject[1].transform.rotation, Mathf.Abs(lag), damage);
         //gunPosObject[gunId % 2].transform.rotation);
 
@@ -88,6 +76,7 @@ public class gun : MonoBehaviour //MonoBehaviourPun, IPunObservable
     public void Shoot(bool enable)
     {
         shoot = enable;
+        firebullet();
     }
 
 

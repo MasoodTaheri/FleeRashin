@@ -52,6 +52,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun
     public enum PlanePartEnum { body, LeftWing, rightWing }
     public int Health;
     public SpriteRenderer Healthbar;
+    public GameObject particlePrefab;
 
     void Start()
     {
@@ -124,50 +125,50 @@ public class DefaultPlayerPlane : MonoBehaviourPun
     }
 
 
-    [PunRPC]
-    public void startWingParticle(string WingName)
-    {
-        Wing2 temp = null;
-        Debug.Log("startWingParticle " + WingName);
-        if (WingName == "rightWing")
-            temp = rightWing;
+    //[PunRPC]
+    //public void startWingParticle(string WingName)
+    //{
+    //    Wing2 temp = null;
+    //    Debug.Log("startWingParticle " + WingName);
+    //    if (WingName == "rightWing")
+    //        temp = rightWing;
 
-        if (WingName == "LeftWing")
-            temp = leftWing;
+    //    if (WingName == "LeftWing")
+    //        temp = leftWing;
 
-        if (temp.ps == null)
-        {
-            GameObject go = Instantiate(temp.PS_winghitPrefab, temp.root.transform.position, Quaternion.identity) as GameObject;
-            temp.ps = go.GetComponent<ParticleSystem>();
-            go.transform.SetParent(temp.root.transform);
-        }
-    }
+    //    if (temp.ps == null)
+    //    {
+    //        GameObject go = Instantiate(temp.PS_winghitPrefab, temp.root.transform.position, Quaternion.identity) as GameObject;
+    //        temp.ps = go.GetComponent<ParticleSystem>();
+    //        go.transform.SetParent(temp.root.transform);
+    //    }
+    //}
 
-    [PunRPC]
-    public void startAllWingParticle()
-    {
-        //Wing2 temp = null;
-        //Debug.Log("startWingParticle " + WingName);
-        //if (WingName == "rightWing")
-        //    temp = rightWing;
+    //[PunRPC]
+    //public void startAllWingParticle()
+    //{
+    //    //Wing2 temp = null;
+    //    //Debug.Log("startWingParticle " + WingName);
+    //    //if (WingName == "rightWing")
+    //    //    temp = rightWing;
 
-        //if (WingName == "LeftWing")
-        //    temp = leftWing;
+    //    //if (WingName == "LeftWing")
+    //    //    temp = leftWing;
 
-        if (rightWing.ps == null)
-        {
-            GameObject go = Instantiate(rightWing.PS_winghitPrefab, rightWing.root.transform.position, Quaternion.identity) as GameObject;
-            rightWing.ps = go.GetComponent<ParticleSystem>();
-            go.transform.SetParent(rightWing.root.transform);
-        }
+    //    if (rightWing.ps == null)
+    //    {
+    //        GameObject go = Instantiate(rightWing.PS_winghitPrefab, rightWing.root.transform.position, Quaternion.identity) as GameObject;
+    //        rightWing.ps = go.GetComponent<ParticleSystem>();
+    //        go.transform.SetParent(rightWing.root.transform);
+    //    }
 
-        if (leftWing.ps == null)
-        {
-            GameObject go = Instantiate(leftWing.PS_winghitPrefab, leftWing.root.transform.position, Quaternion.identity) as GameObject;
-            leftWing.ps = go.GetComponent<ParticleSystem>();
-            go.transform.SetParent(leftWing.root.transform);
-        }
-    }
+    //    if (leftWing.ps == null)
+    //    {
+    //        GameObject go = Instantiate(leftWing.PS_winghitPrefab, leftWing.root.transform.position, Quaternion.identity) as GameObject;
+    //        leftWing.ps = go.GetComponent<ParticleSystem>();
+    //        go.transform.SetParent(leftWing.root.transform);
+    //    }
+    //}
 
     public bool ishit()
     {
@@ -227,8 +228,6 @@ public class DefaultPlayerPlane : MonoBehaviourPun
         rotate();
         //leftWing.Update();
         //rightWing.Update();
-
-
     }
 
 
@@ -256,6 +255,9 @@ public class DefaultPlayerPlane : MonoBehaviourPun
 
     public void OnCollisionEnter(Collision collision)
     {
+        if (!pv.IsMine && PhotonNetwork.IsConnected)
+            return;
+
         Debug.Log("Collision with " + collision.gameObject.name + "  tag=" + collision.gameObject.tag);
         if (collision.gameObject.tag == "Star")
         {
@@ -384,9 +386,20 @@ public class DefaultPlayerPlane : MonoBehaviourPun
 
     public void OnTriggerEnter(Collider collision)
     {
+
         Debug.Log("Trigger hit by bullet");
         if (collision.gameObject.tag == "bullet")
         {
+
+            GameObject BulletEffect = Instantiate(particlePrefab, collision.transform.position, Quaternion.identity) as GameObject;
+            BulletEffect.transform.SetParent(this.transform);
+            Destroy(BulletEffect, 3);
+
+            Debug.Log(collision.gameObject.name);
+
+            if (!pv.IsMine && PhotonNetwork.IsConnected)
+                return;
+
             BulletCode bc = collision.gameObject.GetComponent<BulletCode>();
             if (bc.owner == pv.Owner)
             {
@@ -394,32 +407,48 @@ public class DefaultPlayerPlane : MonoBehaviourPun
                 return;
             }
 
-            //Debug.Log("calling RPC planeBodyHit " + gameObject.name);
-            //pv.RPC("planeBodyHit", RpcTarget.All, bc.damage);
+
+
+
+            //for (int i = 0; i < colliders.Length; i++)
+            //    if (collision.contacts[0].thisCollider == colliders[i].collider)
+            //        if (colliders[i].partname == PlanePartEnum.body)
+            //        {
+            //        }
+
+
+            pv.RPC("RPC_Plane_Bullet_hit", RpcTarget.All, bc.damage);
             Debug.Log("WingCollision with" + collision.gameObject.tag + "   " + collision.gameObject.name);
-
-            Health -= bc.damage;
-            if ((Health < 50) && (leftWing.ps == null))
-                pv.RPC("startAllWingParticle", RpcTarget.All);
-
-            if (Health < 0)
-                pv.RPC("planeBodyHit", RpcTarget.All, bc.damage);
-
         }
-
     }
 
     [PunRPC]
-    public void planeBodyHit(int damage)
+    public void RPC_Plane_Bullet_hit(int damage)
     {
-        Debug.Log("RPC planeBodyHit " + Time.time);
         Health -= damage;
-        if (Health > 0)
-            return;
+        if ((Health < 50) && (leftWing.ps == null))
+        {
+            if (rightWing.ps == null)
+            {
+                GameObject go = Instantiate(rightWing.PS_winghitPrefab, rightWing.root.transform.position, Quaternion.identity) as GameObject;
+                rightWing.ps = go.GetComponent<ParticleSystem>();
+                go.transform.SetParent(rightWing.root.transform);
+            }
 
-        RocketManager.instance.expludeAt(1, transform.position);
-        destroy();
+            if (leftWing.ps == null)
+            {
+                GameObject go = Instantiate(leftWing.PS_winghitPrefab, leftWing.root.transform.position, Quaternion.identity) as GameObject;
+                leftWing.ps = go.GetComponent<ParticleSystem>();
+                go.transform.SetParent(leftWing.root.transform);
+            }
+        }
+        if (Health < 0)
+        {
+            RocketManager.instance.expludeAt(1, transform.position);
+            destroy();
+        }
     }
+
 
 
     public void inchealth()

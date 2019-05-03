@@ -14,6 +14,7 @@ public class BulletCode : MonoBehaviour
     public Player owner;
     public int damage;
 
+
     // Use this for initialization
     void Start()
     {
@@ -43,6 +44,7 @@ public class BulletCode : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         Debug.LogFormat("OnTriggerEnter BulletCode {0} hited by {1}", other.gameObject.name, this.gameObject.name);
+        
         Destroy(this.gameObject);
     }
 

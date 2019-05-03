@@ -1036,6 +1036,8 @@ MonoBehaviour:
     partname: 2
   Health: 100
   Healthbar: {fileID: 212148923957943490}
+  particlePrefab: {fileID: 1872758205644024, guid: 675b0d7c6525aff40a5d46870aac6b69,
+    type: 2}
 --- !u!212 &212148923957943490
 SpriteRenderer:
   m_ObjectHideFlags: 1
