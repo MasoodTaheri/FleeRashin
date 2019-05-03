@@ -55,6 +55,7 @@ GameObject:
   - component: {fileID: 54000012012848442}
   - component: {fileID: 96000011033609012}
   - component: {fileID: 65000013144791770}
+  - component: {fileID: 114822831931997854}
   m_Layer: 0
   m_Name: Rocket
   m_TagString: Rocket
@@ -231,6 +232,28 @@ TrailRenderer:
   m_MinVertexDistance: 0.1
   m_Autodestruct: 0
   m_Emitting: 1
+--- !u!114 &114822831931997854
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000012813501954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f69841a9737e1dc48ba79f08a0c397bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RocketUIPrefab: {fileID: 0}
+  RocketImage: {fileID: 0}
+  ps: {fileID: 0}
+  readytodestroy: 0
+  incSpeedValue: 0
+  flareCountforBreakTarget: -1
+  flareControllerCode: {fileID: 0}
+  rb: {fileID: 0}
+  forwardSpeed: 0
+  rotateSpeed: 0
+  lifetime: 0
 --- !u!198 &198000012312594682
 ParticleSystem:
   m_ObjectHideFlags: 1

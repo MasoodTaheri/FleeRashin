@@ -10,7 +10,7 @@ public class EnemyPlane : AIPlane
 {
     public GameObject _target;
     public GameObject Bullet;
-    public ShootClass gun;
+    //public ShootClass gun;
     public List<GameObject> gunPosObject;
     public bool coinCollector;
     public bool fightWithPlayer;
@@ -67,9 +67,9 @@ public class EnemyPlane : AIPlane
         if (fightWithPlayer)
         {
             if (playermanager.PlanePlayer == null) return;
-            if (playermanager.PlanePlayer.obj == null) return;
+            if (playermanager.PlanePlayer == null) return;
 
-            target = playermanager.PlanePlayer.obj.transform.position;
+            target = playermanager.PlanePlayer.transform.position;
 
         }
 
@@ -79,8 +79,8 @@ public class EnemyPlane : AIPlane
     void Start()
     {
         base.Start();
-        gun = new MachineGun() { bulletPrefab = Bullet, lifeLength = bulletLifeTime, speed = bulletSpeed };
-        gun.Spawner = new List<GameObject>(gunPosObject);
+        //gun = new MachineGun() { bulletPrefab = Bullet, lifeLength = bulletLifeTime, speed = bulletSpeed };
+        //gun.Spawner = new List<GameObject>(gunPosObject);
         planeImage.sprite = planeImages[UnityEngine.Random.Range(0, planeImages.Count)];
         //bulleGenerated = gun.bulltes;
     }
@@ -92,31 +92,31 @@ public class EnemyPlane : AIPlane
     {
         base.Update();
         if (playermanager.PlanePlayer != null)
-            if (playermanager.PlanePlayer.obj != null)
+            if (playermanager.PlanePlayer != null)
             {
-                distance = Vector3.Distance(playermanager.PlanePlayer.obj.transform.position, transform.position);
+                distance = Vector3.Distance(playermanager.PlanePlayer.transform.position, transform.position);
                 if (distance > distancetoshoot)
                     return;
             }
 
         {
             if (playermanager.PlanePlayer != null)
-                if (playermanager.PlanePlayer.obj != null)
-                    ang = Vector3.Dot(playermanager.PlanePlayer.obj.transform.forward
+                if (playermanager.PlanePlayer != null)
+                    ang = Vector3.Dot(playermanager.PlanePlayer.transform.forward
            , this.gameObject.transform.forward);
 
-            if (ang > 0.5f)
-            {
-                t0 += Time.deltaTime;
-                if (t0 > startShootdelay)
-                {
-                    gun.Shoot(-1);
-                    aus.PlayOneShot(auc);
+            //if (ang > 0.5f)
+            //{
+            //    t0 += Time.deltaTime;
+            //    if (t0 > startShootdelay)
+            //    {
+            //        gun.Shoot(-1);
+            //        aus.PlayOneShot(auc);
 
-                    //if (t0 > Shootdelay + ShootLength)
-                    t0 = 0;
-                }
-            }
+            //        //if (t0 > Shootdelay + ShootLength)
+            //        t0 = 0;
+            //    }
+            //}
 
         }
 

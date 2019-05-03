@@ -18,7 +18,7 @@ public class followplane : MonoBehaviour //attached to camera
         if (plane == null)
         {
             if (playermanager.PlanePlayer != null)
-                plane = playermanager.PlanePlayer.obj;
+                plane = playermanager.PlanePlayer.gameObject;
             //GameObject.FindGameObjectWithTag("Playerbody");
             //if (plane.GetComponent<movement>() == null) plane = null;
             return;

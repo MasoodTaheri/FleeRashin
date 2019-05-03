@@ -25,7 +25,8 @@ public class IAPandAD : MonoBehaviour
 
     public static void showad(string why)
     {
-        instance.showAD(why);
+        if (instance != null)
+            instance.showAD(why);
     }
 
     public void showAD(string why)

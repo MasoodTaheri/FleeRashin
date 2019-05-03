@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using System;
 
 
-public class Rocket : MovableObject
+public class Rocket : MonoBehaviour
 {
 
     GameObject target;
@@ -28,16 +28,27 @@ public class Rocket : MovableObject
     private float life;
     const float neardeathTime = 3;
 
-    public Rocket(float _forwardSpeed, float _rotateSpeed, float _lifetime, Sprite _sprite, GameObject prefab, GameObject _Root)
-        : base(_forwardSpeed, _rotateSpeed, _lifetime, _sprite, prefab)
+
+    public Rigidbody rb;
+    public float forwardSpeed;
+    public float rotateSpeed;
+    public float lifetime;
+    //public Sprite Sprite;
+    //public GameObject obj;
+
+
+
+
+    //public void Init(GameObject _Root)
+    void Start()
     {
         //rotateSpeed = 1;//
         //forwardSpeed = 3.65f;//
         //lifetime = 15;//
 
         //obj = _obj;
-        obj = GameObject.Instantiate(prefab, spawnpos(), Quaternion.identity) as GameObject;
-        obj.transform.SetParent(_Root.transform);
+        //obj = GameObject.Instantiate(prefab, spawnpos(), Quaternion.identity) as GameObject;
+        //obj.transform.SetParent(_Root.transform);
 
 
         //target = GameObject.FindGameObjectWithTag("Playerbody");
@@ -45,7 +56,7 @@ public class Rocket : MovableObject
         deltaPosTarget = new Vector3(UnityEngine.Random.Range(-0.33f, 0.33f), 0, UnityEngine.Random.Range(-0.22f, 0.22f));
         //target = GameObject.Find("Playerplane");
         //GameObject.Destroy(obj, lifetime + UnityEngine.Random.Range(0, 5));
-        rb = obj.GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
 
         RocketUIPrefab = Resources.Load("RocketUIPos") as GameObject;
         RocketUI = GameObject.Instantiate(RocketUIPrefab) as GameObject;
@@ -56,28 +67,28 @@ public class Rocket : MovableObject
         //forwardSpeed += Random.Range(0, 1.5f);
         rotateSpeed += UnityEngine.Random.Range(-0.5f, 0.5f);
 
-        ColliderCallback cc = obj.gameObject.AddComponent<ColliderCallback>();
+        ColliderCallback cc = this.gameObject.AddComponent<ColliderCallback>();
         cc.enter += Collision;
         cc.destroy += OnDestroy;
 
         findplayer();
-        ps = obj.transform.GetChild(1).GetComponent<ParticleSystem>();
+        ps = transform.GetChild(1).GetComponent<ParticleSystem>();
         //cc.InvokeRepeating("findplayer", 0, 1);
         //explusionList = new List<ExplusionClass>();
         life += UnityEngine.Random.Range(0, 5f);
     }
 
-    public override void Collision(Collision collision,GameObject me)
+    public void Collision(Collision collision, GameObject me)
     {
         destroiedbyCollision = true;
         //GameObject.Destroy(obj, 0.25f);
-        GameObject.Destroy(obj);
+        GameObject.Destroy(this.gameObject);
         //RocketImage.SetActive(false);
         target = null;
         foreach (ExplusionClass e in RocketManager.instance.explusionList)
         {
             if (e.tag == collision.gameObject.tag)
-                GameObject.Destroy(GameObject.Instantiate(e.prefab, obj.transform.position, Quaternion.identity) as GameObject, 5);
+                GameObject.Destroy(GameObject.Instantiate(e.prefab, transform.position, Quaternion.identity) as GameObject, 5);
         }
 
         if (collision.gameObject.tag == "Playerbody")
@@ -94,7 +105,7 @@ public class Rocket : MovableObject
     }
     Vector3 spawnpos()
     {
-        return playermanager.PlanePlayer.obj.transform.position + new Vector3(Randomsgn(5, 10), 0, Randomsgn(5, 10));
+        return playermanager.PlanePlayer.transform.position + new Vector3(Randomsgn(5, 10), 0, Randomsgn(5, 10));
     }
 
     float Randomsgn(float min, float max)
@@ -105,10 +116,10 @@ public class Rocket : MovableObject
         return sign * number;
     }
 
-    public override void Update()
+    public void Update()
     {
         if (isDestroyed) return;
-        UIPOSClass.UIposArrow(obj.transform.position, uiIndic);
+        UIPOSClass.UIposArrow(transform.position, uiIndic);
 
 
         if (target == null)
@@ -121,19 +132,19 @@ public class Rocket : MovableObject
         findplayer();
 
 
-        Vector3 relativePos = target.transform.position + deltaPosTarget - obj.transform.position;
+        Vector3 relativePos = target.transform.position + deltaPosTarget - transform.position;
         Quaternion rotation = Quaternion.LookRotation(relativePos);
 
-        if (Mathf.Abs(Vector3.Angle(obj.transform.rotation.eulerAngles, rotation.eulerAngles)) < 0.1f)
+        if (Mathf.Abs(Vector3.Angle(transform.rotation.eulerAngles, rotation.eulerAngles)) < 0.1f)
             incSpeedValue += (incSpeedValue < maxIncValue) ? StrateForwardIncreaseAmount : 0;
         else
             incSpeedValue = 0;
 
 
 
-        obj.transform.rotation = Quaternion.Lerp(obj.transform.rotation, rotation, Time.deltaTime * rotateSpeed);
+        transform.rotation = Quaternion.Lerp(transform.rotation, rotation, Time.deltaTime * rotateSpeed);
 
-        rb.velocity = obj.transform.forward * (forwardSpeed + incSpeedValue);
+        rb.velocity = transform.forward * (forwardSpeed + incSpeedValue);
 
 
         life += Time.deltaTime;
@@ -143,8 +154,8 @@ public class Rocket : MovableObject
                 ps.enableEmission = false;
             if (life > lifetime)
             {
-                GameObject.Destroy(GameObject.Instantiate(RocketManager.instance.explusionList[1].prefab, obj.transform.position, Quaternion.identity) as GameObject, 5);
-                GameObject.Destroy(obj);
+                GameObject.Destroy(GameObject.Instantiate(RocketManager.instance.explusionList[1].prefab, transform.position, Quaternion.identity) as GameObject, 5);
+                GameObject.Destroy(this.gameObject);
             }
         }
     }
@@ -168,7 +179,7 @@ public class Rocket : MovableObject
             float maxdistance = 2.5f;
             for (int i = 1; i < targets.Length; i++)//start from 1 because its better fo find flare insted of planes
             {
-                float localdist = Vector3.Distance(obj.transform.position, targets[i].transform.position);
+                float localdist = Vector3.Distance(transform.position, targets[i].transform.position);
 
                 if (localdist < dist)
                 {
@@ -178,7 +189,7 @@ public class Rocket : MovableObject
             }
             if (id != -1)
             {
-                float localdist = Vector3.Distance(obj.transform.position, targets[id].transform.position);
+                float localdist = Vector3.Distance(transform.position, targets[id].transform.position);
                 if (localdist < maxdistance)
                 {
                     //Debug.Log("localdist=" + localdist);
@@ -198,7 +209,7 @@ public class Rocket : MovableObject
 
     bool destroiedbyCollision = false;
 
-    protected override void rotate()
+    protected void rotate()
     {
         throw new NotImplementedException();
     }

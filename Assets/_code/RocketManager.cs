@@ -14,7 +14,7 @@ public class UIPOSClass
 
     public static void UIposArrow(Vector3 target, Image indicator)
     {
-
+        if (indicator == null) return;
         if (cam == null) cam = Camera.main;
 
         ret = cam.WorldToScreenPoint(target);
@@ -41,11 +41,14 @@ public class UIPOSClass
             if (ret.x > Screen.width) indicator.transform.rotation = Quaternion.Euler(0, 0, -90);
         else if (ret.x < 0) indicator.transform.rotation = Quaternion.Euler(0, 0, 90);
 
+
+
     }
 }
 
 public class RocketManager : MonoBehaviour
 {
+    public bool allowRockets;
     public static RocketManager instance;
     GameObject player;
     public GameObject RocketPrefab;
@@ -66,6 +69,7 @@ public class RocketManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!allowRockets) return;
         for (int i = 0; i < RocketCount; i++)
         {
             if (rocketlist[i] != null)
@@ -102,7 +106,13 @@ public class RocketManager : MonoBehaviour
                 //float rotateSpeed = 1;//
                 //float forwardSpeed = 3.65f;//
                 //float lifetime = 15;//
-                rocketlist[i] = new Rocket(forwardSpeed, rotateSpeed, lifetime, null, RocketPrefab, RocketRoot);
+                //rocketlist[i] = new Rocket(forwardSpeed, rotateSpeed, lifetime, null, RocketPrefab, RocketRoot);
+                rocketlist[i] = Instantiate(RocketPrefab).GetComponent<Rocket>();
+                rocketlist[i].gameObject.transform.SetParent(RocketRoot.transform);
+
+                rocketlist[i].forwardSpeed = forwardSpeed;
+                rocketlist[i].rotateSpeed = rotateSpeed;
+                rocketlist[i].lifetime = lifetime;
                 //rocketlist[i].gameObject.transform.SetParent(RocketRoot.transform);
             }
         }

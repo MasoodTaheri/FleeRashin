@@ -13,16 +13,22 @@ public class uiController : MonoBehaviour
     private Text timer;
     [SerializeField]
     private Text StarCounter;
-	[SerializeField]
-	private Text RocketHitLabel;
-	[SerializeField]
-	private Text PlaneHitLabel;
+    [SerializeField]
+    private Text RocketHitLabel;
+    [SerializeField]
+    private Text PlaneHitLabel;
+
+    public GameObject mainmenu;
+    public GameObject Ingame;
+    public GameObject Powerup;
+    public GameObject waitingroom;
+
 
 
     private float CuTime;
     private int Stars;
     private int Rockethit;
-	private int PlaneHit;
+    private int PlaneHit;
     float t = 0;
     public float get_CuTime() { return CuTime; }
     public int get_Stars() { return Stars; }
@@ -67,11 +73,11 @@ public class uiController : MonoBehaviour
     }
 
 
-	public void IncPlaneHit()
-	{
-		PlaneHit++;
-		PlaneHitLabel.text = PlaneHit.ToString();
-	}
+    public void IncPlaneHit()
+    {
+        PlaneHit++;
+        PlaneHitLabel.text = PlaneHit.ToString();
+    }
 
 
     public void resetUIelements()
@@ -83,7 +89,7 @@ public class uiController : MonoBehaviour
         StarCounter.text = Stars.ToString();
         timer.text = CuTime.ToString("f1");
         RocketHitLabel.text = Rockethit.ToString();
-		PlaneHitLabel.text = PlaneHit.ToString ();
+        PlaneHitLabel.text = PlaneHit.ToString();
         t = Time.time;
     }
 

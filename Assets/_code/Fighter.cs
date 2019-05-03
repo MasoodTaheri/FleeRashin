@@ -34,9 +34,7 @@ public class Fighter : EnemyPlane
             }
             else
                 DamageStepInc();
-
         }
-
     }
     void DamageStepInc()
     {
