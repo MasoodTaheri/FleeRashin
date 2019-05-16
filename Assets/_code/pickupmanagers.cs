@@ -2,9 +2,15 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
+using Photon.Realtime;
+using ExitGames.Client.Photon;
+
 
 public class pickupmanagers : MonoBehaviour
 {
+
+
     public GameObject root;
     public GameObject straPrefab;
     public GameObject repairPrefab;
@@ -13,10 +19,15 @@ public class pickupmanagers : MonoBehaviour
     public GameObject[] Collectableobjs = new GameObject[5];
     GameObject[] CollectableIcon = new GameObject[5];
     Image[] CollectableImage = new Image[5];
-    const float DestructableTime = 15;
+    //const float DestructableTime = 15;
     GameObject playerPlane;
     public Canvas canvas;
     public static pickupmanagers instance;
+
+
+    public Vector3 pivot;
+    public float Radius;
+    //public float count;
 
     // Use this for initialization
     void Start()
@@ -60,6 +71,6 @@ public class pickupmanagers : MonoBehaviour
         CollectableImage[idOfArray] = CollectableIcon[idOfArray].GetComponent<Image>();
 
         Collectableobjs[idOfArray].transform.position = playerPlane.transform.position + new Vector3(Random.Range(-20, 20), 0, Random.Range(-20, 20));
-    }
 
+    }
 }

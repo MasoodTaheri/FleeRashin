@@ -18,12 +18,13 @@ public class playermanager : MonoBehaviour, IOnEventCallback
     public List<AudioClip> InGameMusic;
     public float forwardSpeed;
     public float rotateSpeed;
-
+    public GameObject puncoin;
 
 
 
     private readonly byte EndOfRound_event = 0;
     private readonly byte StartGame_event = 1;
+    public static readonly byte pickupItemGeneration = 2;
 
     // Use this for initialization
     void Start()
@@ -58,6 +59,18 @@ public class playermanager : MonoBehaviour, IOnEventCallback
                 ////Debug.Log("LoosecountForAd=" + PlayerPrefs.GetInt("LoosecountForAd", 0));
             }
 
+            if (Input.GetKeyUp(KeyCode.Q))
+            {
+                // PhotonNetwork.Instantiate(puncoin.name, Vector3.zero, Quaternion.identity);
+                GetComponent<Pickupmanager2>().GenerateItem();
+            }
+            if (Input.GetKeyUp(KeyCode.W))
+            {
+                // PhotonNetwork.Instantiate(puncoin.name, Vector3.zero, Quaternion.identity);
+                GetComponent<Pickupmanager2>().RemoveAll();
+            }
+
+
         }
         else
         {
@@ -88,6 +101,7 @@ public class playermanager : MonoBehaviour, IOnEventCallback
             Debug.Log("try to destroy myself");
             PlanePlayer.destroy();
         }
+        GetComponent<Pickupmanager2>().GenerateItem();
 
 
         Debug.Log("startGameEvent function ");
@@ -95,14 +109,14 @@ public class playermanager : MonoBehaviour, IOnEventCallback
         uiController.Instanse.Ingame.SetActive(true);
         uiController.Instanse.Powerup.SetActive(true);
         uiController.Instanse.waitingroom.SetActive(false);
-        
+
 
 
 
         //PlanePlayer = new DefaultPlayerPlane(forwardSpeed, rotateSpeed, -1, null, playerPrefab);
         //PlanePlayer = Instantiate(playerPrefab).GetComponent<DefaultPlayerPlane>();
         //PlanePlayer = PhotonNetwork.Instantiate(playerPrefab.name,Vector3.zero,Quaternion.identity).GetComponent<DefaultPlayerPlane>();
-        Vector3 spawnpoint = new Vector3(Random.Range(-3.0f, 3.0f), 0, Random.Range(-3.0f, 3.0f));
+        Vector3 spawnpoint = new Vector3(Random.Range(-3.0f, 3.0f), -6, Random.Range(-3.0f, 3.0f));
         PlanePlayer = PhotonNetwork.Instantiate(playerPrefab.name, spawnpoint, Quaternion.identity).GetComponent<DefaultPlayerPlane>();
         PlanePlayer.forwardSpeed = forwardSpeed;
         PlanePlayer.rotateSpeed = rotateSpeed;
@@ -147,7 +161,7 @@ public class playermanager : MonoBehaviour, IOnEventCallback
             //    PlanePlayer.planeBodyHit();
             //}                
             //else
-                //Debug.Log("PlanePlayer is null");
+            //Debug.Log("PlanePlayer is null");
             //pv.RPC("planeBodyHit", RpcTarget.All);
 
 
@@ -166,10 +180,18 @@ public class playermanager : MonoBehaviour, IOnEventCallback
 
             //Debug.Log("LoosecountForAd=" + PlayerPrefs.GetInt("LoosecountForAd", 0));
         }
-        if(photonEvent.Code== StartGame_event)
+        if (photonEvent.Code == StartGame_event)
         {
             Debug.Log("OnEvent StartGame_event is called " + photonEvent.Code.ToString());
             startGameEvent();
+        }
+
+        if (photonEvent.Code == pickupItemGeneration)
+        {
+            object[] data = (object[])photonEvent.CustomData;
+
+            //Vector3 targetPosition = (Vector3)data[0];
+
         }
     }
 

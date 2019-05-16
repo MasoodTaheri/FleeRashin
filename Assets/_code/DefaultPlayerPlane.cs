@@ -124,6 +124,11 @@ public class DefaultPlayerPlane : MonoBehaviourPun
         planeGun.Shoot(false);
     }
 
+    public void ShootRocket()
+    {
+
+    }
+
 
     //[PunRPC]
     //public void startWingParticle(string WingName)
@@ -387,10 +392,9 @@ public class DefaultPlayerPlane : MonoBehaviourPun
     public void OnTriggerEnter(Collider collision)
     {
 
-        Debug.Log("Trigger hit by bullet");
         if (collision.gameObject.tag == "bullet")
         {
-
+            Debug.Log("Trigger hit by bullet");
             GameObject BulletEffect = Instantiate(particlePrefab, collision.transform.position, Quaternion.identity) as GameObject;
             BulletEffect.transform.SetParent(this.transform);
             Destroy(BulletEffect, 3);

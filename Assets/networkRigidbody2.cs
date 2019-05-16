@@ -10,8 +10,10 @@ public class networkRigidbody2 : MonoBehaviourPun, IPunObservable
     public Vector3 angularVelocity;
     public PhotonView pv;
     public Rigidbody rigidbody;
-    public float LerpSpeed = 4;
-    public float LerpFactor = 1;
+    public float PosLerpSpeed = 4;
+    public float PosLerpFactor = 1;
+    public float RotLerpSpeed = 4;
+    public float RotLerpFactor = 1;
     //public float updateTime = 0;
     public float ErrorInPos = 0;
     public float ErrorInRot = 0;
@@ -44,7 +46,8 @@ public class networkRigidbody2 : MonoBehaviourPun, IPunObservable
     {
         if (!pv.IsMine)
         {
-            LerpFactor = Time.fixedDeltaTime * LerpSpeed;
+            PosLerpFactor = Time.fixedDeltaTime * PosLerpSpeed;
+            RotLerpFactor = Time.fixedDeltaTime * RotLerpSpeed;
 
             //Vector3 projectedPosition = pos + velocity * (Time.time - updateTime);
             //transform.position = Vector3.Lerp(transform.position, projectedPosition, LerpFactor);
@@ -63,11 +66,11 @@ public class networkRigidbody2 : MonoBehaviourPun, IPunObservable
             }
             else
             {
-                rigidbody.position = Vector3.Lerp(rigidbody.position, pos, LerpFactor);
-                rigidbody.rotation = Quaternion.Lerp(rigidbody.rotation, rot, LerpFactor * 2);
+                rigidbody.position = Vector3.Lerp(rigidbody.position, pos, PosLerpFactor);
+                rigidbody.rotation = Quaternion.Lerp(rigidbody.rotation, rot, RotLerpFactor);
 
-                rigidbody.velocity = Vector3.Lerp(rigidbody.velocity, velocity, LerpFactor);
-                rigidbody.angularVelocity = Vector3.Lerp(rigidbody.angularVelocity, angularVelocity, LerpFactor);
+                rigidbody.velocity = Vector3.Lerp(rigidbody.velocity, velocity, PosLerpFactor);
+                rigidbody.angularVelocity = Vector3.Lerp(rigidbody.angularVelocity, angularVelocity, PosLerpFactor);
 
             }
 

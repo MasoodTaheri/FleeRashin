@@ -41,6 +41,15 @@ public class arrowskeys : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
             if (direction == "Shoot")
                 playermanager.PlanePlayer.EndShoot();
+
+
+            if (direction == "ShootRocket")
+                playermanager.PlanePlayer.ShootRocket();
+
+
+
+
+
         }
         //movement.PlanePlayer.OnPointerUp(direction);
     }

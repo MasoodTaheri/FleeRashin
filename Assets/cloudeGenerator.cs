@@ -12,6 +12,12 @@ public class cloudeGenerator : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        //Generate_Cloudes
+    }
+
+    [ContextMenu("Generate_Cloudes")]
+    public void Generate_Cloudes()
+    {
         for (int i = 0; i < count; i++)
         {
             Vector3 pos = pivot + new Vector3(Random.Range(-Radius, Radius), 0, Random.Range(-Radius, Radius));

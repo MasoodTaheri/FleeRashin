@@ -908,8 +908,8 @@ MonoBehaviour:
   bulletLifeTime: 3
   bulletSpeed: 10
   aus: {fileID: 82928477635179920}
-  Shootdelay: 0.5
-  damage: 5
+  Shootdelay: 0.2
+  damage: 1
 --- !u!114 &114146665314938386
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -992,8 +992,10 @@ MonoBehaviour:
   angularVelocity: {x: 0, y: 0, z: 0}
   pv: {fileID: 114146665314938386}
   rigidbody: {fileID: 54772069611432864}
-  LerpSpeed: 1
-  LerpFactor: 1
+  PosLerpSpeed: 1
+  PosLerpFactor: 1
+  RotLerpSpeed: 20
+  RotLerpFactor: 1
   ErrorInPos: 0
   ErrorInRot: 0
   uselerp: 1
