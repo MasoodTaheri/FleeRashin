@@ -53,6 +53,8 @@ public class DefaultPlayerPlane : MonoBehaviourPun
     public int Health;
     public SpriteRenderer Healthbar;
     public GameObject particlePrefab;
+    public GameObject RocketPrefab;
+    public GameObject planeExplusion;
 
     void Start()
     {
@@ -126,9 +128,17 @@ public class DefaultPlayerPlane : MonoBehaviourPun
 
     public void ShootRocket()
     {
-
+        pv.RPC("ShootRocket_Rpc", RpcTarget.All);
     }
 
+    [PunRPC]
+    private void ShootRocket_Rpc()
+    {
+        GameObject Bullet1 = Instantiate(RocketPrefab) as GameObject;
+        Bullet1.transform.position = transform.position + transform.forward * 2;
+        Bullet1.transform.rotation = transform.rotation;
+
+    }
 
     //[PunRPC]
     //public void startWingParticle(string WingName)
@@ -391,11 +401,15 @@ public class DefaultPlayerPlane : MonoBehaviourPun
 
     public void OnTriggerEnter(Collider collision)
     {
+        Debug.Log("plane hit by " + collision.gameObject.tag);
+
 
         if (collision.gameObject.tag == "bullet")
         {
             Debug.Log("Trigger hit by bullet");
-            GameObject BulletEffect = Instantiate(particlePrefab, collision.transform.position, Quaternion.identity) as GameObject;
+            BulletCode bc = collision.gameObject.GetComponent<BulletCode>();
+            //GameObject BulletEffect = Instantiate(particlePrefab, collision.transform.position, Quaternion.identity) as GameObject;
+            GameObject BulletEffect = Instantiate(bc.HitParticle, collision.transform.position, Quaternion.identity) as GameObject;
             BulletEffect.transform.SetParent(this.transform);
             Destroy(BulletEffect, 3);
 
@@ -404,15 +418,12 @@ public class DefaultPlayerPlane : MonoBehaviourPun
             if (!pv.IsMine && PhotonNetwork.IsConnected)
                 return;
 
-            BulletCode bc = collision.gameObject.GetComponent<BulletCode>();
+            //BulletCode bc = collision.gameObject.GetComponent<BulletCode>();
             if (bc.owner == pv.Owner)
             {
                 Debug.Log("I hit myself");
                 return;
             }
-
-
-
 
             //for (int i = 0; i < colliders.Length; i++)
             //    if (collision.contacts[0].thisCollider == colliders[i].collider)
@@ -420,6 +431,31 @@ public class DefaultPlayerPlane : MonoBehaviourPun
             //        {
             //        }
 
+
+            pv.RPC("RPC_Plane_Bullet_hit", RpcTarget.All, bc.damage);
+            Debug.Log("WingCollision with" + collision.gameObject.tag + "   " + collision.gameObject.name);
+        }
+
+        if (collision.gameObject.tag == "Rocket")
+        {
+            Debug.Log("Trigger hit by Rocket");
+            BulletCode bc = collision.gameObject.GetComponent<BulletCode>();
+            //GameObject BulletEffect = Instantiate(particlePrefab, collision.transform.position, Quaternion.identity) as GameObject;
+            GameObject BulletEffect = Instantiate(bc.HitParticle, collision.transform.position, Quaternion.identity) as GameObject;
+            BulletEffect.transform.SetParent(this.transform);
+            Destroy(BulletEffect, 3);
+
+            Debug.Log(collision.gameObject.name);
+
+            if (!pv.IsMine && PhotonNetwork.IsConnected)
+                return;
+
+
+            if (bc.owner == pv.Owner)
+            {
+                Debug.Log("I hit myself");
+                return;
+            }
 
             pv.RPC("RPC_Plane_Bullet_hit", RpcTarget.All, bc.damage);
             Debug.Log("WingCollision with" + collision.gameObject.tag + "   " + collision.gameObject.name);
@@ -448,7 +484,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun
         }
         if (Health < 0)
         {
-            RocketManager.instance.expludeAt(1, transform.position);
+            Destroy(Instantiate(planeExplusion, transform.position, Quaternion.identity) as GameObject, 5);
             destroy();
         }
     }

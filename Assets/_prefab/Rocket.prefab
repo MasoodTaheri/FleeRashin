@@ -251,9 +251,10 @@ MonoBehaviour:
   flareCountforBreakTarget: -1
   flareControllerCode: {fileID: 0}
   rb: {fileID: 0}
-  forwardSpeed: 0
-  rotateSpeed: 0
-  lifetime: 0
+  forwardSpeed: 3
+  rotateSpeed: 1
+  lifetime: 25
+  explusion: {fileID: 0}
 --- !u!198 &198000012312594682
 ParticleSystem:
   m_ObjectHideFlags: 1

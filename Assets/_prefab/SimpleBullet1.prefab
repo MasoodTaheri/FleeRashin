@@ -125,8 +125,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3dc8770b86e7a46409a177490b4c1d5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Speed: 0
+  LifeLength: 0
   damage: 0
-  particlePrefab: {fileID: 1872758205644024, guid: 675b0d7c6525aff40a5d46870aac6b69,
+  HitParticle: {fileID: 1872758205644024, guid: 675b0d7c6525aff40a5d46870aac6b69,
     type: 2}
 --- !u!136 &136198224713183128
 CapsuleCollider:

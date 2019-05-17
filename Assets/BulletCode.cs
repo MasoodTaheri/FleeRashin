@@ -6,13 +6,14 @@ using Photon.Realtime;
 
 public class BulletCode : MonoBehaviour
 {
-    //[SerializeField]
+    [SerializeField]
     private float Speed;
-    //[SerializeField]
+    [SerializeField]
     private float LifeLength;
     //[SerializeField]
     public Player owner;
     public int damage;
+    public GameObject HitParticle;
 
 
     // Use this for initialization

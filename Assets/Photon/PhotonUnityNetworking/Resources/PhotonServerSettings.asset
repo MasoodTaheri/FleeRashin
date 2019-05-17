@@ -38,5 +38,6 @@ MonoBehaviour:
   - RpcTeleport
   - startAllWingParticle
   - RPC_Plane_Bullet_hit
+  - ShootRocket_Rpc
   DisableAutoOpenWizard: 1
   ShowSettings: 1

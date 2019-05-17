@@ -148,7 +148,9 @@ public class EnemyPlane : AIPlane
 
     private void OnDestroy()
     {
-        RocketManager.instance.expludeAt(1, transform.position);
+        //RocketManager.instance.expludeAt(1, transform.position);
+        throw new System.NotImplementedException();
+        
         //if (Vector3.Distance(playermanager.PlanePlayer.obj.transform.position
         //    , transform.position) < 10)
         //uiController.Instanse.IncPlaneHit();

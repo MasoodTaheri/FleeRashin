@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using Photon.Pun;
 
 
 public class UIPOSClass
@@ -69,6 +70,7 @@ public class RocketManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //if (!PhotonNetwork.IsMasterClient) return;
         if (!allowRockets) return;
         for (int i = 0; i < RocketCount; i++)
         {
@@ -90,11 +92,11 @@ public class RocketManager : MonoBehaviour
 
     }
 
-    public void expludeAt(int explusionId, Vector3 pos)
-    {
-        Destroy(Instantiate(explusionList[explusionId].prefab,
-    pos, Quaternion.identity) as GameObject, 5);
-    }
+    //public void expludeAt(int explusionId, Vector3 pos)
+    //{
+    //    Destroy(Instantiate(explusionList[explusionId].prefab,
+    //pos, Quaternion.identity) as GameObject, 5);
+    //}
 
     private void CheckAndGenerateRockets()
     {
