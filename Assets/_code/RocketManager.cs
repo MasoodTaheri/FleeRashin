@@ -55,11 +55,11 @@ public class RocketManager : MonoBehaviour
     public GameObject RocketPrefab;
     public Rocket[] rocketlist = new Rocket[3];
     public GameObject RocketRoot;
-    public List<ExplusionClass> explusionList;
+    //public List<ExplusionClass> explusionList;
     public int RocketCount;
-    public float rotateSpeed;
-    public float forwardSpeed;
-    public float lifetime;
+    //public float rotateSpeed;
+    //public float forwardSpeed;
+    //public float lifetime;
 
     // Use this for initialization
     void Start()
@@ -70,7 +70,14 @@ public class RocketManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (!PhotonNetwork.IsMasterClient) return;
+        if (!PhotonNetwork.IsMasterClient) return;
+
+        if (player == null)
+        {
+            player = GameObject.FindGameObjectWithTag("Playerbody");
+            return;
+        }
+
         if (!allowRockets) return;
         for (int i = 0; i < RocketCount; i++)
         {
@@ -78,16 +85,12 @@ public class RocketManager : MonoBehaviour
             {
                 if (rocketlist[i].readytodestroy)
                     rocketlist[i] = null;
-                else
-                    rocketlist[i].Update();
+                //else
+                //    rocketlist[i].Update();
             }
         }
 
-        if (player == null)
-        {
-            player = GameObject.FindGameObjectWithTag("Playerbody");
-            return;
-        }
+
         CheckAndGenerateRockets();
 
     }
@@ -109,12 +112,14 @@ public class RocketManager : MonoBehaviour
                 //float forwardSpeed = 3.65f;//
                 //float lifetime = 15;//
                 //rocketlist[i] = new Rocket(forwardSpeed, rotateSpeed, lifetime, null, RocketPrefab, RocketRoot);
-                rocketlist[i] = Instantiate(RocketPrefab).GetComponent<Rocket>();
-                rocketlist[i].gameObject.transform.SetParent(RocketRoot.transform);
+                //rocketlist[i] = Instantiate(RocketPrefab).GetComponent<Rocket>();
+                rocketlist[i] = PhotonNetwork.InstantiateSceneObject(RocketPrefab.name,
+                    new Vector3(0,-6,0),Quaternion.identity).GetComponent<Rocket>();
+                //rocketlist[i].gameObject.transform.SetParent(RocketRoot.transform);
 
-                rocketlist[i].forwardSpeed = forwardSpeed;
-                rocketlist[i].rotateSpeed = rotateSpeed;
-                rocketlist[i].lifetime = lifetime;
+                //rocketlist[i].forwardSpeed = forwardSpeed;
+                //rocketlist[i].rotateSpeed = rotateSpeed;
+                //rocketlist[i].lifetime = lifetime;
                 //rocketlist[i].gameObject.transform.SetParent(RocketRoot.transform);
             }
         }

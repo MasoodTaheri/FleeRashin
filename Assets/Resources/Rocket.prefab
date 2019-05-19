@@ -56,6 +56,8 @@ GameObject:
   - component: {fileID: 96000011033609012}
   - component: {fileID: 65000013144791770}
   - component: {fileID: 114822831931997854}
+  - component: {fileID: 114576207982427920}
+  - component: {fileID: 114721964571633746}
   m_Layer: 0
   m_Name: Rocket
   m_TagString: Rocket
@@ -126,7 +128,7 @@ BoxCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012813501954}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.35286897, y: 1, z: 1.3103373}
@@ -232,6 +234,51 @@ TrailRenderer:
   m_MinVertexDistance: 0.1
   m_Autodestruct: 0
   m_Emitting: 1
+--- !u!114 &114576207982427920
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000012813501954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 114721964571633746}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &114721964571633746
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000012813501954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 849d839b7e6af87408c150b2e9d37bc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pos: {x: 0, y: 0, z: 0}
+  velocity: {x: 0, y: 0, z: 0}
+  rot: {x: 0, y: 0, z: 0, w: 0}
+  angularVelocity: {x: 0, y: 0, z: 0}
+  pv: {fileID: 114576207982427920}
+  rigidbody: {fileID: 54000012012848442}
+  PosLerpSpeed: 1
+  PosLerpFactor: 1
+  RotLerpSpeed: 20
+  RotLerpFactor: 1
+  ErrorInPos: 0
+  ErrorInRot: 0
+  uselerp: 1
 --- !u!114 &114822831931997854
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -243,6 +290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f69841a9737e1dc48ba79f08a0c397bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  target: {fileID: 0}
   RocketUIPrefab: {fileID: 0}
   RocketImage: {fileID: 0}
   ps: {fileID: 0}
@@ -254,7 +302,9 @@ MonoBehaviour:
   forwardSpeed: 3
   rotateSpeed: 1
   lifetime: 25
-  explusion: {fileID: 0}
+  HitParticle: {fileID: 1000010782257932, guid: 483ec6d9bc037cc45be5a80b4de70e68,
+    type: 2}
+  damage: 40
 --- !u!198 &198000012312594682
 ParticleSystem:
   m_ObjectHideFlags: 1

@@ -110,6 +110,7 @@ public class playermanager : MonoBehaviour, IOnEventCallback
         uiController.Instanse.Powerup.SetActive(true);
         uiController.Instanse.waitingroom.SetActive(false);
 
+        GetComponent<RocketManager>().allowRockets = true;
 
 
 
@@ -134,6 +135,7 @@ public class playermanager : MonoBehaviour, IOnEventCallback
 
     IEnumerator result_show()
     {
+        GetComponent<RocketManager>().allowRockets = false;
         yield return new WaitForSeconds(2.5f);
         ingameMenu.SetActive(false);
         ResaultMenu.SetActive(true);

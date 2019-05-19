@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using Photon.Pun;
+using Photon.Realtime;
 
-
-public class Rocket : MonoBehaviour
+public class Rocket : MonoBehaviour, IShoot
 {
 
-    GameObject target;
+    public GameObject target;
     Vector3 deltaPosTarget;
     Canvas canvas;
     public GameObject RocketUIPrefab;
@@ -35,10 +36,8 @@ public class Rocket : MonoBehaviour
     public float lifetime;
     //public Sprite Sprite;
     //public GameObject obj;
-    public GameObject explusion;
-
-
-
+    public GameObject HitParticle;
+    public int damage;
 
     //public void Init(GameObject _Root)
     void Start()
@@ -68,42 +67,56 @@ public class Rocket : MonoBehaviour
         //forwardSpeed += Random.Range(0, 1.5f);
         rotateSpeed += UnityEngine.Random.Range(-0.5f, 0.5f);
 
-        ColliderCallback cc = this.gameObject.AddComponent<ColliderCallback>();
-        cc.enter += Collision;
-        cc.destroy += OnDestroy;
+        //ColliderCallback cc = this.gameObject.AddComponent<ColliderCallback>();
+        //cc.enter += Collision;
+        //cc.destroy += OnDestroy;
 
         findplayer();
         ps = transform.GetChild(1).GetComponent<ParticleSystem>();
         //cc.InvokeRepeating("findplayer", 0, 1);
         //explusionList = new List<ExplusionClass>();
         life += UnityEngine.Random.Range(0, 5f);
+        transform.position = spawnpos();
+
     }
 
     public void Collision(Collision collision, GameObject me)
     {
         destroiedbyCollision = true;
         //GameObject.Destroy(obj, 0.25f);
+        GameObject.Destroy(GameObject.Instantiate(HitParticle, transform.position, Quaternion.identity) as GameObject, 5);
         GameObject.Destroy(this.gameObject);
         //RocketImage.SetActive(false);
         target = null;
-        foreach (ExplusionClass e in RocketManager.instance.explusionList)
-        {
-            if (e.tag == collision.gameObject.tag)
-                GameObject.Destroy(GameObject.Instantiate(e.prefab, transform.position, Quaternion.identity) as GameObject, 5);
-        }
+        /*  foreach (ExplusionClass e in RocketManager.instance.explusionList)
+          {
+              if (e.tag == collision.gameObject.tag)
+                  GameObject.Destroy(GameObject.Instantiate(e.prefab, transform.position, Quaternion.identity) as GameObject, 5);
+          }
 
-        if (collision.gameObject.tag == "Playerbody")
-        {
-            playermanager.PlanePlayer.destroy();
-        }
-        //Destroy(collision.gameObject);
+          if (collision.gameObject.tag == "Playerbody")
+          {
+              playermanager.PlanePlayer.destroy();
+          }
+          //Destroy(collision.gameObject);*/
 
-        if (collision.gameObject.tag == "Rocket")
-            uiController.Instanse.IncRockethit();
+        //if (collision.gameObject.tag == "Rocket")
+        //    uiController.Instanse.IncRockethit();
 
-        if (collision.gameObject.tag == "bullet")
-            uiController.Instanse.IncRockethit();
+        //if (collision.gameObject.tag == "bullet")
+        //    uiController.Instanse.IncRockethit();
     }
+
+
+    public void OnTriggerEnter(Collider collision)
+    {
+        destroiedbyCollision = true;
+        //GameObject.Destroy(GameObject.Instantiate(HitParticle, transform.position, Quaternion.identity) as GameObject, 5);
+        //GameObject.Destroy(this.gameObject);
+        target = null;
+    }
+
+
     Vector3 spawnpos()
     {
         return playermanager.PlanePlayer.transform.position + new Vector3(Randomsgn(5, 10), 0, Randomsgn(5, 10));
@@ -119,10 +132,11 @@ public class Rocket : MonoBehaviour
 
     public void Update()
     {
-        if (isDestroyed) return;
+
         UIPOSClass.UIposArrow(transform.position, uiIndic);
 
-
+        if (!PhotonNetwork.IsMasterClient) return;
+        if (isDestroyed) return;
         if (target == null)
         {
             target = GameObject.FindGameObjectWithTag("Playerbody");
@@ -155,8 +169,9 @@ public class Rocket : MonoBehaviour
                 ps.enableEmission = false;
             if (life > lifetime)
             {
-                GameObject.Destroy(GameObject.Instantiate(RocketManager.instance.explusionList[1].prefab, transform.position, Quaternion.identity) as GameObject, 5);
-                GameObject.Destroy(this.gameObject);
+                GameObject.Destroy(GameObject.Instantiate(HitParticle, transform.position, Quaternion.identity) as GameObject, 5);
+                //GameObject.Destroy(this.gameObject);
+                PhotonNetwork.Destroy(this.gameObject);
             }
         }
     }
@@ -227,5 +242,22 @@ public class Rocket : MonoBehaviour
         if (ps != null)
             ps.enableEmission = false;
         readytodestroy = true;
+    }
+
+    public Player GetOwner()
+    {
+        return null;
+    }
+
+    public int GetDamage()
+    {
+        return damage;
+    }
+
+    public void Explude()
+    {
+        GameObject BulletEffect = Instantiate(HitParticle, transform.position, Quaternion.identity) as GameObject;
+        Destroy(BulletEffect, 3);
+        GameObject.Destroy(this.gameObject);
     }
 }

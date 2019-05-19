@@ -19,7 +19,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4903640902072286}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Rwing
   m_TagString: winghit
   m_Icon: {fileID: 0}
@@ -34,7 +34,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4029906239661080}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Lwing
   m_TagString: winghit
   m_Icon: {fileID: 0}
@@ -50,7 +50,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4790447261314502}
   - component: {fileID: 212590971795338664}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Plane (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -66,7 +66,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4294000734470374}
   - component: {fileID: 96618298313172152}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -81,7 +81,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4654590530070604}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Gunpos (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,7 +97,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4381717531419454}
   - component: {fileID: 212148923957943490}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Plane (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -114,7 +114,7 @@ GameObject:
   - component: {fileID: 4070382999953098}
   - component: {fileID: 212396121506501956}
   - component: {fileID: 82115105893564824}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -129,7 +129,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4083330104871910}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +157,7 @@ GameObject:
   - component: {fileID: 114633103119837490}
   - component: {fileID: 65837548847706642}
   - component: {fileID: 65581905280209748}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Playerplane
   m_TagString: Playerbody
   m_Icon: {fileID: 0}
@@ -173,7 +173,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4221676347422528}
   - component: {fileID: 96332555427496762}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -188,7 +188,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4272572649100734}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Gunpos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1042,7 +1042,8 @@ MonoBehaviour:
     type: 2}
   RocketPrefab: {fileID: 1908083349636788, guid: 9429f3bdb48e0564193204b4a473ca1d,
     type: 2}
-  planeExplusion: {fileID: 0}
+  planeExplusion: {fileID: 1000010782257932, guid: 95763d1c5e9ce4445b10296a19b0c1d5,
+    type: 2}
 --- !u!212 &212148923957943490
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -4,7 +4,15 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class BulletCode : MonoBehaviour
+
+public interface IShoot
+{
+    Player GetOwner();
+    int GetDamage();
+    void Explude();
+}
+
+public class BulletCode : MonoBehaviour,IShoot
 {
     [SerializeField]
     private float Speed;
@@ -59,5 +67,21 @@ public class BulletCode : MonoBehaviour
         transform.rotation = rot;
         damage = _damage;
 
+    }
+
+    public Player GetOwner()
+    {
+        return owner;
+    }
+
+    public int GetDamage()
+    {
+        return damage;
+    }
+
+    public void Explude()
+    {
+        GameObject BulletEffect = Instantiate(HitParticle, transform.position, Quaternion.identity) as GameObject;
+        Destroy(BulletEffect, 3);
     }
 }

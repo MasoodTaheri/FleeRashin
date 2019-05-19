@@ -50,17 +50,18 @@ public class EnemyPlane : AIPlane
         {
             if (_target == null)
             {
-                if (pickupmanagers.instance != null)
-                {
-                    if (pickupmanagers.instance.Collectableobjs.Length > 0)
-                    {
-                        _target = pickupmanagers.instance.Collectableobjs
-                            [UnityEngine.Random.Range(0, pickupmanagers.instance.Collectableobjs.Length)];
-                        if (_target != null)
-                            target = _target.transform.position;
-                    }
+                //if (pickupmanagers.instance != null)
+                //{
+                //    if (pickupmanagers.instance.Collectableobjs.Length > 0)
+                //    {
+                //        _target = pickupmanagers.instance.Collectableobjs
+                //            [UnityEngine.Random.Range(0, pickupmanagers.instance.Collectableobjs.Length)];
+                //        if (_target != null)
+                //            target = _target.transform.position;
+                //    }
 
-                }
+                //}
+                throw new System.NotImplementedException();
             }
         }
 

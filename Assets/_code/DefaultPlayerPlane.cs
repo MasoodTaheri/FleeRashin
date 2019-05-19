@@ -136,6 +136,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun
     {
         GameObject Bullet1 = Instantiate(RocketPrefab) as GameObject;
         Bullet1.transform.position = transform.position + transform.forward * 2;
+            //- new Vector3(0, -2, 0);
         Bullet1.transform.rotation = transform.rotation;
 
     }
@@ -439,11 +440,33 @@ public class DefaultPlayerPlane : MonoBehaviourPun
         if (collision.gameObject.tag == "Rocket")
         {
             Debug.Log("Trigger hit by Rocket");
-            BulletCode bc = collision.gameObject.GetComponent<BulletCode>();
-            //GameObject BulletEffect = Instantiate(particlePrefab, collision.transform.position, Quaternion.identity) as GameObject;
-            GameObject BulletEffect = Instantiate(bc.HitParticle, collision.transform.position, Quaternion.identity) as GameObject;
-            BulletEffect.transform.SetParent(this.transform);
-            Destroy(BulletEffect, 3);
+
+            IShoot shootable = collision.gameObject.GetComponent<IShoot>();
+            if (shootable == null)
+            {
+                Debug.LogError("shootable is null");
+                return;
+            }
+            shootable.Explude();
+
+
+            //BulletCode bc = collision.gameObject.GetComponent<BulletCode>();
+            //if (bc != null)
+            //{
+            //    GameObject BulletEffect = Instantiate(bc.HitParticle, collision.transform.position, Quaternion.identity) as GameObject;
+            //    Destroy(BulletEffect, 3);
+            //}
+            //else
+            //{
+            //    Rocket rc = collision.gameObject.GetComponent<Rocket>();
+            //    if (rc != null)
+            //    {
+            //        GameObject BulletEffect = Instantiate(rc.HitParticle, collision.transform.position, Quaternion.identity) as GameObject;
+            //        Destroy(BulletEffect, 3);
+            //    }
+            //}
+
+
 
             Debug.Log(collision.gameObject.name);
 
@@ -451,13 +474,13 @@ public class DefaultPlayerPlane : MonoBehaviourPun
                 return;
 
 
-            if (bc.owner == pv.Owner)
-            {
-                Debug.Log("I hit myself");
-                return;
-            }
+            //if (bc.owner == pv.Owner)
+            //{
+            //    Debug.Log("I hit myself");
+            //    return;
+            //}
 
-            pv.RPC("RPC_Plane_Bullet_hit", RpcTarget.All, bc.damage);
+            pv.RPC("RPC_Plane_Bullet_hit", RpcTarget.All, shootable.GetDamage());
             Debug.Log("WingCollision with" + collision.gameObject.tag + "   " + collision.gameObject.name);
         }
     }
