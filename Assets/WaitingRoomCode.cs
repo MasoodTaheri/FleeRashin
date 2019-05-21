@@ -8,8 +8,6 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class WaitingRoomCode : MonoBehaviour
 {
-
-
     [System.Serializable]
     public class PlayerClass
     {
@@ -29,7 +27,9 @@ public class WaitingRoomCode : MonoBehaviour
             Buttonready = obj.transform.GetChild(2).GetComponent<Button>();
             StatePlayer = obj.transform.GetChild(3).GetComponent<Text>();
             obj.transform.SetParent(root.transform, false);
-            obj.transform.position = root.transform.position + new Vector3(0, row * 100, 0);
+
+            //obj.transform.position = root.transform.position + new Vector3(0, row * 100, 0);
+            obj.transform.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -1 * (row + 1) * 100);
         }
 
         public void SetFields(int playerid)
@@ -38,16 +38,16 @@ public class WaitingRoomCode : MonoBehaviour
             name = PhotonNetwork.PlayerList[playerid].NickName;
             IsMaster.text = (PhotonNetwork.PlayerList[playerid].IsMasterClient) ? "[Master]" : "[Client]";
 
+
             object Pready;
-            if(PhotonNetwork.PlayerList[playerid].CustomProperties.TryGetValue(luncher.PLAYER_READY, out Pready))
+            if (PhotonNetwork.PlayerList[playerid].CustomProperties.TryGetValue(luncher.PLAYER_READY, out Pready))
             {
                 Isready = (bool)Pready;
                 if (PhotonNetwork.NickName == PhotonNetwork.PlayerList[playerid].NickName)
                 {
                     Buttonready.gameObject.SetActive(!(bool)Pready);
                     StatePlayer.gameObject.SetActive((bool)Pready);
-                    StatePlayer.text= (!(bool)Pready) ? "Waiting ...": "Ready";
-                  
+                    StatePlayer.text = (!(bool)Pready) ? "Waiting ..." : "Ready";
                 }
                 else
                 {
@@ -55,9 +55,8 @@ public class WaitingRoomCode : MonoBehaviour
                     Buttonready.gameObject.SetActive(true);
                     //if (!(bool)Pready) players[i].StatePlayer.text = "Waiting ...";
                     //else players[i].StatePlayer.text = "Ready";
-                    StatePlayer.text= (!(bool)Pready)? "Waiting ...":"Ready"; 
+                    StatePlayer.text = (!(bool)Pready) ? "Waiting ..." : "Ready";
                 }
-                    
             }
             else
             {
@@ -89,7 +88,8 @@ public class WaitingRoomCode : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        InvokeRepeating("refresh", 1, 1.5f);
+        //InvokeRepeating("refresh", 1, 1.5f);
+        refresh();
     }
 
     // Update is called once per frame
@@ -176,14 +176,7 @@ public class WaitingRoomCode : MonoBehaviour
                     players[i].StatePlayer.gameObject.SetActive(true);
                 }
             }
-
-
-
-
         }
-
-
-
         StartGame.gameObject.SetActive((PhotonNetwork.PlayerList.Length > 1) && readystate && (PhotonNetwork.IsMasterClient));
     }
 
@@ -196,21 +189,25 @@ public class WaitingRoomCode : MonoBehaviour
         {
             GameObject go = Instantiate(WaitRoomPlayeDataPrefab);
             PlayerClass temp = new PlayerClass(go, ContentRoot, i);
+            temp.Buttonready.onClick.AddListener(delegate
+            {
+                Debug.Log("button pressed");
+                int id = i;
+                Button_ready(id);
+            });
             temp.SetFields(i);
             players.Add(temp);
             readystate = readystate && temp.Isready;
         }
-
         StartGame.gameObject.SetActive((PhotonNetwork.PlayerList.Length > 1) && readystate && (PhotonNetwork.IsMasterClient));
     }
 
     public void Button_ready(int id)
     {
+        Debug.Log("2");
         Hashtable props = new Hashtable() { { luncher.PLAYER_READY, true } };
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
         players[id].Buttonready.gameObject.SetActive(false);
         players[id].StatePlayer.gameObject.SetActive(true);
     }
-
-
 }
