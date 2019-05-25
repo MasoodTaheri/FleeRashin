@@ -407,7 +407,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun
 
         if (collision.gameObject.tag == "bullet")
         {
-            Debug.Log("Trigger hit by bullet");
+            //Debug.Log("Trigger hit by bullet");
             BulletCode bc = collision.gameObject.GetComponent<BulletCode>();
             //GameObject BulletEffect = Instantiate(particlePrefab, collision.transform.position, Quaternion.identity) as GameObject;
             GameObject BulletEffect = Instantiate(bc.HitParticle, collision.transform.position, Quaternion.identity) as GameObject;
@@ -434,17 +434,17 @@ public class DefaultPlayerPlane : MonoBehaviourPun
 
 
             pv.RPC("RPC_Plane_Bullet_hit", RpcTarget.All, bc.damage);
-            Debug.Log("WingCollision with" + collision.gameObject.tag + "   " + collision.gameObject.name);
+            //Debug.Log("WingCollision with" + collision.gameObject.tag + "   " + collision.gameObject.name);
         }
 
         if (collision.gameObject.tag == "Rocket")
         {
-            Debug.Log("Trigger hit by Rocket");
+            //Debug.Log("Trigger hit by Rocket");
 
             IShoot shootable = collision.gameObject.GetComponent<IShoot>();
             if (shootable == null)
             {
-                Debug.LogError("shootable is null");
+                //Debug.LogError("shootable is null");
                 return;
             }
             shootable.Explude();
@@ -468,7 +468,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun
 
 
 
-            Debug.Log(collision.gameObject.name);
+            //Debug.Log(collision.gameObject.name);
 
             if (!pv.IsMine && PhotonNetwork.IsConnected)
                 return;
@@ -481,7 +481,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun
             //}
 
             pv.RPC("RPC_Plane_Bullet_hit", RpcTarget.All, shootable.GetDamage());
-            Debug.Log("WingCollision with" + collision.gameObject.tag + "   " + collision.gameObject.name);
+            //Debug.Log("WingCollision with" + collision.gameObject.tag + "   " + collision.gameObject.name);
         }
     }
 
@@ -547,7 +547,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun
     {
 
         readytodestroy = true;
-        Debug.Log("bodey destroy" + gameObject.name);
+        //Debug.Log("bodey destroy" + gameObject.name);
         //if (flareObj!=null)
         //GameObject.Destroy(flareObj);
 

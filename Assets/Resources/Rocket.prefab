@@ -296,7 +296,6 @@ MonoBehaviour:
   ps: {fileID: 0}
   readytodestroy: 0
   incSpeedValue: 0
-  flareCountforBreakTarget: -1
   flareControllerCode: {fileID: 0}
   rb: {fileID: 0}
   forwardSpeed: 3

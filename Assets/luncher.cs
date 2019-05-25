@@ -126,7 +126,7 @@ public class luncher : MonoBehaviourPunCallbacks
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
         Debug.Log("OnJoinRandomFailed");
-        PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = 2 });
+        PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = 20 });
 
     }
 
@@ -150,6 +150,12 @@ public class luncher : MonoBehaviourPunCallbacks
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         Debug.Log("OnPlayerEnteredRoom " + newPlayer.NickName);
+        GetAllPlayersInRoom();
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        Debug.Log("OnPlayerEnteredRoom " + otherPlayer.NickName);
         GetAllPlayersInRoom();
     }
 
@@ -192,11 +198,6 @@ public class luncher : MonoBehaviourPunCallbacks
     //        //playersInRoom.Add(p.NickName);
     //    }
 
-
-
-
-
-
     }
     public const string PLAYER_READY = "IsPlayerReady";
     //public const string PLAYER_NotREADY = "PlayerNotReady";
@@ -211,8 +212,6 @@ public class luncher : MonoBehaviourPunCallbacks
         }
 
     }
-
-
 
 
 }

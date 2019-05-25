@@ -24,7 +24,7 @@ public class Rocket : MonoBehaviour, IShoot
     public float incSpeedValue = 0;
     float maxIncValue = 1.0f;
     //advance feature
-    public int flareCountforBreakTarget = -1;
+    //public int flareCountforBreakTarget = -1;
     public flareController flareControllerCode;
     private float life;
     const float neardeathTime = 3;
@@ -70,9 +70,13 @@ public class Rocket : MonoBehaviour, IShoot
         //ColliderCallback cc = this.gameObject.AddComponent<ColliderCallback>();
         //cc.enter += Collision;
         //cc.destroy += OnDestroy;
+        ps = transform.GetChild(1).GetComponent<ParticleSystem>();
+
+        if (!PhotonNetwork.IsMasterClient)
+            return;
 
         findplayer();
-        ps = transform.GetChild(1).GetComponent<ParticleSystem>();
+
         //cc.InvokeRepeating("findplayer", 0, 1);
         //explusionList = new List<ExplusionClass>();
         life += UnityEngine.Random.Range(0, 5f);
@@ -80,12 +84,17 @@ public class Rocket : MonoBehaviour, IShoot
 
     }
 
+
+
     public void Collision(Collision collision, GameObject me)
     {
-        destroiedbyCollision = true;
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+        //destroiedbyCollision = true;
         //GameObject.Destroy(obj, 0.25f);
-        GameObject.Destroy(GameObject.Instantiate(HitParticle, transform.position, Quaternion.identity) as GameObject, 5);
-        GameObject.Destroy(this.gameObject);
+        //GameObject.Destroy(GameObject.Instantiate(HitParticle, transform.position, Quaternion.identity) as GameObject, 5);
+        //GameObject.Destroy(this.gameObject);
+        PhotonNetwork.Destroy(this.gameObject);
         //RocketImage.SetActive(false);
         target = null;
         /*  foreach (ExplusionClass e in RocketManager.instance.explusionList)
@@ -110,16 +119,22 @@ public class Rocket : MonoBehaviour, IShoot
 
     public void OnTriggerEnter(Collider collision)
     {
-        destroiedbyCollision = true;
+        //destroiedbyCollision = true;
         //GameObject.Destroy(GameObject.Instantiate(HitParticle, transform.position, Quaternion.identity) as GameObject, 5);
         //GameObject.Destroy(this.gameObject);
+        if (!PhotonNetwork.IsMasterClient)
+            return;
         target = null;
     }
 
 
     Vector3 spawnpos()
     {
-        return playermanager.PlanePlayer.transform.position + new Vector3(Randomsgn(5, 10), 0, Randomsgn(5, 10));
+        if (target == null)
+            findplayer();
+
+        return target.transform.position + new Vector3(Randomsgn(5, 10), 0, Randomsgn(5, 10));
+
     }
 
     float Randomsgn(float min, float max)
@@ -139,12 +154,13 @@ public class Rocket : MonoBehaviour, IShoot
         if (isDestroyed) return;
         if (target == null)
         {
-            target = GameObject.FindGameObjectWithTag("Playerbody");
+            //target = GameObject.FindGameObjectWithTag("Playerbody");
+            findplayer();
             uiIndic.enabled = false;
             return;
         }
 
-        findplayer();
+
 
 
         Vector3 relativePos = target.transform.position + deltaPosTarget - transform.position;
@@ -169,7 +185,7 @@ public class Rocket : MonoBehaviour, IShoot
                 ps.enableEmission = false;
             if (life > lifetime)
             {
-                GameObject.Destroy(GameObject.Instantiate(HitParticle, transform.position, Quaternion.identity) as GameObject, 5);
+                //GameObject.Destroy(GameObject.Instantiate(HitParticle, transform.position, Quaternion.identity) as GameObject, 5);
                 //GameObject.Destroy(this.gameObject);
                 PhotonNetwork.Destroy(this.gameObject);
             }
@@ -183,47 +199,46 @@ public class Rocket : MonoBehaviour, IShoot
     void findplayer()
     {
         GameObject[] targets = GameObject.FindGameObjectsWithTag("Playerbody");
-        if (targets.Length < flareCountforBreakTarget) return;
-        if (targets.Length == 0) return;
-        if (targets.Length == 1) target = targets[0];
-        else
-        {
-            if (flareControllerCode != null) return;// if this is not null no need to change target(flare)
+        //if (targets.Length < flareCountforBreakTarget) return;
+        if (targets.Length == 0) Debug.LogError("targets count=" + targets.Length);
+        target = targets[UnityEngine.Random.Range(0, targets.Length)];
 
-            int id = -1;
-            float dist = Mathf.Infinity;
-            float maxdistance = 2.5f;
-            for (int i = 1; i < targets.Length; i++)//start from 1 because its better fo find flare insted of planes
-            {
-                float localdist = Vector3.Distance(transform.position, targets[i].transform.position);
+        //if (targets.Length == 1) target = targets[0];
+        //else
+        //{
+        //    if (flareControllerCode != null) return;// if this is not null no need to change target(flare)
 
-                if (localdist < dist)
-                {
-                    dist = localdist;
-                    id = i;
-                }
-            }
-            if (id != -1)
-            {
-                float localdist = Vector3.Distance(transform.position, targets[id].transform.position);
-                if (localdist < maxdistance)
-                {
-                    //Debug.Log("localdist=" + localdist);
-                    target = null;
-                    target = targets[id];
-                    flareControllerCode = target.GetComponent<flareController>();
-                }
-                //else
-                //Debug.Log("localdist=" + localdist+"    not selected");
+        //    int id = -1;
+        //    float dist = Mathf.Infinity;
+        //    float maxdistance = 2.5f;
+        //    for (int i = 1; i < targets.Length; i++)//start from 1 because its better fo find flare insted of planes
+        //    {
+        //        float localdist = Vector3.Distance(transform.position, targets[i].transform.position);
 
-
-            }
-
-        }
+        //        if (localdist < dist)
+        //        {
+        //            dist = localdist;
+        //            id = i;
+        //        }
+        //    }
+        //    if (id != -1)
+        //    {
+        //        float localdist = Vector3.Distance(transform.position, targets[id].transform.position);
+        //        if (localdist < maxdistance)
+        //        {
+        //            //Debug.Log("localdist=" + localdist);
+        //            target = null;
+        //            target = targets[id];
+        //            flareControllerCode = target.GetComponent<flareController>();
+        //        }
+        //        //else
+        //        //Debug.Log("localdist=" + localdist+"    not selected");
+        //    }
+        //}
 
     }
 
-    bool destroiedbyCollision = false;
+    //bool destroiedbyCollision = false;
 
     protected void rotate()
     {
@@ -233,6 +248,7 @@ public class Rocket : MonoBehaviour, IShoot
 
     void OnDestroy()
     {
+        GameObject.Destroy(GameObject.Instantiate(HitParticle, transform.position, Quaternion.identity) as GameObject, 5);
         if (uiIndic != null)
             if (uiIndic.gameObject != null)
                 GameObject.Destroy(uiIndic.gameObject, 0.25f);
@@ -256,8 +272,10 @@ public class Rocket : MonoBehaviour, IShoot
 
     public void Explude()
     {
-        GameObject BulletEffect = Instantiate(HitParticle, transform.position, Quaternion.identity) as GameObject;
-        Destroy(BulletEffect, 3);
-        GameObject.Destroy(this.gameObject);
+        //GameObject BulletEffect = Instantiate(HitParticle, transform.position, Quaternion.identity) as GameObject;
+        //Destroy(BulletEffect, 3);
+        //GameObject.Destroy(this.gameObject);
+        if (PhotonNetwork.IsMasterClient)
+            PhotonNetwork.Destroy(this.gameObject);
     }
 }

@@ -43,34 +43,42 @@ public class WaitingRoomCode : MonoBehaviour
             if (PhotonNetwork.PlayerList[playerid].CustomProperties.TryGetValue(luncher.PLAYER_READY, out Pready))
             {
                 Isready = (bool)Pready;
+                //Debug.Log("TryGetValue PLAYER_READY=" + Isready);
+                //Debug.Log("PhotonNetwork.NickName=" + PhotonNetwork.NickName + "     PhotonNetwork.PlayerList[" + playerid + "].NickName=" + PhotonNetwork.PlayerList[playerid].NickName);
                 if (PhotonNetwork.NickName == PhotonNetwork.PlayerList[playerid].NickName)
                 {
-                    Buttonready.gameObject.SetActive(!(bool)Pready);
-                    StatePlayer.gameObject.SetActive((bool)Pready);
-                    StatePlayer.text = (!(bool)Pready) ? "Waiting ..." : "Ready";
+                    //Debug.Log("is mine");
+                    Buttonready.gameObject.SetActive(!Isready);
+                    StatePlayer.gameObject.SetActive(Isready);
+                    StatePlayer.text = (!Isready) ? "Waiting ..." : "Ready";
                 }
                 else
                 {
+                    //Debug.Log("is Not mine");
                     Buttonready.gameObject.SetActive(false);
-                    Buttonready.gameObject.SetActive(true);
+                    StatePlayer.gameObject.SetActive(true);
                     //if (!(bool)Pready) players[i].StatePlayer.text = "Waiting ...";
                     //else players[i].StatePlayer.text = "Ready";
-                    StatePlayer.text = (!(bool)Pready) ? "Waiting ..." : "Ready";
+                    StatePlayer.text = (!Isready) ? "Waiting ..." : "Ready";
                 }
             }
             else
             {
                 Isready = false;
+                //Debug.Log("TryGetValue not available=" + Isready);
                 StatePlayer.text = "Waiting ...";
+                //Debug.Log("PhotonNetwork.NickName=" + PhotonNetwork.NickName + "     PhotonNetwork.PlayerList[" + playerid + "].NickName=" + PhotonNetwork.PlayerList[playerid].NickName);
                 if (PhotonNetwork.NickName == PhotonNetwork.PlayerList[playerid].NickName)
                 {
-                    Buttonready.gameObject.SetActive(true);
-                    StatePlayer.gameObject.SetActive(false);
+                    //Debug.Log("is mine");
+                    Buttonready.gameObject.SetActive(!Isready);
+                    StatePlayer.gameObject.SetActive(Isready);
                 }
                 else
                 {
-                    Buttonready.gameObject.SetActive(false);
-                    StatePlayer.gameObject.SetActive(true);
+                    //Debug.Log("is Not mine");
+                    Buttonready.gameObject.SetActive(Isready);
+                    StatePlayer.gameObject.SetActive(!Isready);
                 }
             }
 
@@ -84,12 +92,14 @@ public class WaitingRoomCode : MonoBehaviour
     public GameObject WaitRoomPlayeDataPrefab;
     public GameObject ContentRoot;
     public RectTransform contentRectTransform;
+    public Text playername;
+    public Text Roomname;
 
     // Use this for initialization
     void Start()
     {
-        //InvokeRepeating("refresh", 1, 1.5f);
-        refresh();
+        InvokeRepeating("refresh", 1, 1.5f);
+        //refresh();
     }
 
     // Update is called once per frame
@@ -122,66 +132,69 @@ public class WaitingRoomCode : MonoBehaviour
         players.Clear();
         StartGame.gameObject.SetActive(false);
     }
-    public void refresh0()
-    {
-        ClearData();
-        bool readystate = true;
-        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-        {
-            players[i].PlayerName.text = PhotonNetwork.PlayerList[i].NickName;
-            players[i].IsMaster.text = (PhotonNetwork.PlayerList[i].IsMasterClient) ? "[Master]" : "[Client]";
+    //public void refresh0()
+    //{
+    //    ClearData();
+    //    bool readystate = true;
+    //    for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+    //    {
+    //        players[i].PlayerName.text = PhotonNetwork.PlayerList[i].NickName;
+    //        players[i].IsMaster.text = (PhotonNetwork.PlayerList[i].IsMasterClient) ? "[Master]" : "[Client]";
 
-            //players[i].Buttonready.gameObject.SetActive((PhotonNetwork.NickName == PhotonNetwork.PlayerList[i].NickName));
-            //players[i].StatePlayer.gameObject.SetActive((PhotonNetwork.NickName != PhotonNetwork.PlayerList[i].NickName));
+    //        //players[i].Buttonready.gameObject.SetActive((PhotonNetwork.NickName == PhotonNetwork.PlayerList[i].NickName));
+    //        //players[i].StatePlayer.gameObject.SetActive((PhotonNetwork.NickName != PhotonNetwork.PlayerList[i].NickName));
 
-            object Pready;
+    //        object Pready;
 
-            if (PhotonNetwork.PlayerList[i].CustomProperties.TryGetValue(luncher.PLAYER_READY, out Pready))
-            {
-                readystate = readystate && (bool)Pready;
-                if (PhotonNetwork.NickName == PhotonNetwork.PlayerList[i].NickName)
-                {
-                    if (!(bool)Pready) players[i].Buttonready.gameObject.SetActive(true);
-                    else players[i].Buttonready.gameObject.SetActive(false);
+    //        if (PhotonNetwork.PlayerList[i].CustomProperties.TryGetValue(luncher.PLAYER_READY, out Pready))
+    //        {
+    //            readystate = readystate && (bool)Pready;
+    //            if (PhotonNetwork.NickName == PhotonNetwork.PlayerList[i].NickName)
+    //            {
+    //                if (!(bool)Pready) players[i].Buttonready.gameObject.SetActive(true);
+    //                else players[i].Buttonready.gameObject.SetActive(false);
 
-                    if (!(bool)Pready) players[i].StatePlayer.gameObject.SetActive(false);
-                    else players[i].StatePlayer.gameObject.SetActive(true);
-                    if (!(bool)Pready) players[i].StatePlayer.text = "Waiting ...";
-                    else players[i].StatePlayer.text = "Ready";
+    //                if (!(bool)Pready) players[i].StatePlayer.gameObject.SetActive(false);
+    //                else players[i].StatePlayer.gameObject.SetActive(true);
+    //                if (!(bool)Pready) players[i].StatePlayer.text = "Waiting ...";
+    //                else players[i].StatePlayer.text = "Ready";
 
-                }
-                else
-                {
-                    players[i].StatePlayer.gameObject.SetActive(false);
-                    players[i].StatePlayer.gameObject.SetActive(true);
+    //            }
+    //            else
+    //            {
+    //                players[i].StatePlayer.gameObject.SetActive(false);
+    //                players[i].StatePlayer.gameObject.SetActive(true);
 
-                    if (!(bool)Pready) players[i].StatePlayer.text = "Waiting ...";
-                    else players[i].StatePlayer.text = "Ready";
+    //                if (!(bool)Pready) players[i].StatePlayer.text = "Waiting ...";
+    //                else players[i].StatePlayer.text = "Ready";
 
-                }
+    //            }
 
-            }
-            else
-            {
-                readystate = readystate && false;
-                players[i].StatePlayer.text = "Waiting ...";
-                if (PhotonNetwork.NickName == PhotonNetwork.PlayerList[i].NickName)
-                {
-                    players[i].Buttonready.gameObject.SetActive(true);
-                    players[i].StatePlayer.gameObject.SetActive(false);
-                }
-                else
-                {
-                    players[i].Buttonready.gameObject.SetActive(false);
-                    players[i].StatePlayer.gameObject.SetActive(true);
-                }
-            }
-        }
-        StartGame.gameObject.SetActive((PhotonNetwork.PlayerList.Length > 1) && readystate && (PhotonNetwork.IsMasterClient));
-    }
+    //        }
+    //        else
+    //        {
+    //            readystate = readystate && false;
+    //            players[i].StatePlayer.text = "Waiting ...";
+    //            if (PhotonNetwork.NickName == PhotonNetwork.PlayerList[i].NickName)
+    //            {
+    //                players[i].Buttonready.gameObject.SetActive(true);
+    //                players[i].StatePlayer.gameObject.SetActive(false);
+    //            }
+    //            else
+    //            {
+    //                players[i].Buttonready.gameObject.SetActive(false);
+    //                players[i].StatePlayer.gameObject.SetActive(true);
+    //            }
+    //        }
+    //    }
+    //    StartGame.gameObject.SetActive((PhotonNetwork.PlayerList.Length > 1) && readystate && (PhotonNetwork.IsMasterClient));
+    //}
 
     public void refresh()
     {
+        playername.text = "Player name :" + PhotonNetwork.NickName;
+        Roomname.text = "Room:" + PhotonNetwork.CurrentRoom.Name;
+        //Debug.Log(PhotonNetwork.NickName + "  @ " + PhotonNetwork.CurrentRoom.Name);
         ClearData();
         players = new List<PlayerClass>();
         bool readystate = true;
@@ -189,10 +202,10 @@ public class WaitingRoomCode : MonoBehaviour
         {
             GameObject go = Instantiate(WaitRoomPlayeDataPrefab);
             PlayerClass temp = new PlayerClass(go, ContentRoot, i);
+            int id = i;
             temp.Buttonready.onClick.AddListener(delegate
             {
-                Debug.Log("button pressed");
-                int id = i;
+                Debug.Log("button pressed filled with " + id);
                 Button_ready(id);
             });
             temp.SetFields(i);
@@ -204,7 +217,7 @@ public class WaitingRoomCode : MonoBehaviour
 
     public void Button_ready(int id)
     {
-        Debug.Log("2");
+        Debug.Log("Button_ready argument=" + id);
         Hashtable props = new Hashtable() { { luncher.PLAYER_READY, true } };
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
         players[id].Buttonready.gameObject.SetActive(false);
