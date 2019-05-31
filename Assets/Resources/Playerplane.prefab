@@ -996,8 +996,8 @@ MonoBehaviour:
   PosLerpFactor: 1
   RotLerpSpeed: 20
   RotLerpFactor: 1
-  ErrorInPos: 0
-  ErrorInRot: 0
+  ErrorInPos: {x: 0, y: 0}
+  ErrorInRot: {x: 0, y: 0}
   uselerp: 1
 --- !u!114 &114775065588764218
 MonoBehaviour:

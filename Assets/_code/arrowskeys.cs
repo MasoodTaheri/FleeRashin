@@ -3,14 +3,102 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using System.Collections;
 using System;
+using UnityEngine.UI;
 
-public class arrowskeys : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+
+public abstract class UiCallFunction : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     public string direction;
 
-    public void OnPointerDown(PointerEventData eventData)
+    public abstract void OnPointerDown(PointerEventData eventData);
+    //{
+    //    Debug.Log("OnPointerDown base");
+    //    throw new NotImplementedException();
+    //}
+
+    public abstract void OnPointerUp(PointerEventData eventData);
+    //{
+    //    Debug.Log("OnPointerUp base");
+    //    throw new NotImplementedException();
+    //}
+}
+
+public abstract class PowerupButtons : UiCallFunction
+{
+    public Image img;
+    public float refillspeed;
+    //public string direction;
+    public Text CountUi;
+    public override void OnPointerDown(PointerEventData eventData)
     {
-        //Debug.Log("OnPointerClick");
+        //if (PlayerDataClass.Flare == 0)
+        //{
+        //    img.fillAmount = 0;
+        //}
+        if (getvar() == 0)
+        {
+            img.fillAmount = 0;
+        }
+    }
+
+    public abstract int getvar();
+    public abstract void DoAction();
+
+
+    public override void OnPointerUp(PointerEventData eventData)
+    {
+        //if (direction == "Flare")
+        {
+            if ((getvar() > 0) && (img.fillAmount == 1))
+            {
+                //StartCoroutine(playermanager.PlanePlayer.flareDropIE());
+                DoAction();
+                img.fillAmount = 0;
+            }
+        }
+    }
+
+    void Start()
+    {
+        if (getvar() > 0)
+        {
+            img.fillAmount = 1;
+        }
+        else
+        {
+            img.fillAmount = 0;
+        }
+    }
+
+    protected void Update()
+    {
+        if (getvar() > 0)
+        {
+            if (img.fillAmount < 1)
+            {
+                img.fillAmount += refillspeed * Time.deltaTime;
+                if (img.fillAmount > 1)
+                {
+                    img.fillAmount = 1;
+                }
+            }
+        }
+        else
+        {
+            img.fillAmount = 0;
+        }
+
+        CountUi.text = getvar().ToString();
+    }
+}
+
+public class arrowskeys : UiCallFunction
+{
+
+
+    public override void OnPointerDown(PointerEventData eventData)
+    {
+        Debug.Log("OnPointerClick");
         if (playermanager.PlanePlayer != null)
         {
             if (direction == "RightArrow")
@@ -25,7 +113,7 @@ public class arrowskeys : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         //movement.PlanePlayer.OnPointerDown(direction);
     }
 
-    public void OnPointerUp(PointerEventData eventData)
+    public override void OnPointerUp(PointerEventData eventData)
     {
         //Debug.Log("OnPointerClick");
         if (playermanager.PlanePlayer != null)
@@ -43,8 +131,8 @@ public class arrowskeys : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 playermanager.PlanePlayer.EndShoot();
 
 
-            if (direction == "ShootRocket")
-                playermanager.PlanePlayer.ShootRocket();
+            //if (direction == "ShootRocket")
+            //    playermanager.PlanePlayer.ShootRocket();
 
 
 

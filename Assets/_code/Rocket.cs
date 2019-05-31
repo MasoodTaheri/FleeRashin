@@ -53,10 +53,10 @@ public class Rocket : MonoBehaviour, IShoot
 
         //target = GameObject.FindGameObjectWithTag("Playerbody");
         canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
-        deltaPosTarget = new Vector3(UnityEngine.Random.Range(-0.33f, 0.33f), 0, UnityEngine.Random.Range(-0.22f, 0.22f));
+        
         //target = GameObject.Find("Playerplane");
         //GameObject.Destroy(obj, lifetime + UnityEngine.Random.Range(0, 5));
-        rb = GetComponent<Rigidbody>();
+ 
 
         RocketUIPrefab = Resources.Load("RocketUIPos") as GameObject;
         RocketUI = GameObject.Instantiate(RocketUIPrefab) as GameObject;
@@ -65,7 +65,7 @@ public class Rocket : MonoBehaviour, IShoot
 
 
         //forwardSpeed += Random.Range(0, 1.5f);
-        rotateSpeed += UnityEngine.Random.Range(-0.5f, 0.5f);
+        
 
         //ColliderCallback cc = this.gameObject.AddComponent<ColliderCallback>();
         //cc.enter += Collision;
@@ -74,6 +74,9 @@ public class Rocket : MonoBehaviour, IShoot
 
         if (!PhotonNetwork.IsMasterClient)
             return;
+        deltaPosTarget = new Vector3(UnityEngine.Random.Range(-0.33f, 0.33f), 0, UnityEngine.Random.Range(-0.22f, 0.22f));
+        rb = GetComponent<Rigidbody>();
+        rotateSpeed += UnityEngine.Random.Range(-0.5f, 0.5f);
 
         findplayer();
 
@@ -94,7 +97,8 @@ public class Rocket : MonoBehaviour, IShoot
         //GameObject.Destroy(obj, 0.25f);
         //GameObject.Destroy(GameObject.Instantiate(HitParticle, transform.position, Quaternion.identity) as GameObject, 5);
         //GameObject.Destroy(this.gameObject);
-        PhotonNetwork.Destroy(this.gameObject);
+        //PhotonNetwork.Destroy(this.gameObject);
+        Explude();
         //RocketImage.SetActive(false);
         target = null;
         /*  foreach (ExplusionClass e in RocketManager.instance.explusionList)
@@ -187,7 +191,8 @@ public class Rocket : MonoBehaviour, IShoot
             {
                 //GameObject.Destroy(GameObject.Instantiate(HitParticle, transform.position, Quaternion.identity) as GameObject, 5);
                 //GameObject.Destroy(this.gameObject);
-                PhotonNetwork.Destroy(this.gameObject);
+                //PhotonNetwork.Destroy(this.gameObject);
+                Explude();
             }
         }
     }
@@ -200,7 +205,13 @@ public class Rocket : MonoBehaviour, IShoot
     {
         GameObject[] targets = GameObject.FindGameObjectsWithTag("Playerbody");
         //if (targets.Length < flareCountforBreakTarget) return;
-        if (targets.Length == 0) Debug.LogError("targets count=" + targets.Length);
+        if (targets.Length == 0)
+        {
+            Debug.LogError("targets count=" + targets.Length);
+            //PhotonNetwork.Destroy(this.gameObject);
+            Explude();
+            return;
+        }
         target = targets[UnityEngine.Random.Range(0, targets.Length)];
 
         //if (targets.Length == 1) target = targets[0];
@@ -275,6 +286,8 @@ public class Rocket : MonoBehaviour, IShoot
         //GameObject BulletEffect = Instantiate(HitParticle, transform.position, Quaternion.identity) as GameObject;
         //Destroy(BulletEffect, 3);
         //GameObject.Destroy(this.gameObject);
+        if (!PhotonNetwork.IsMasterClient) return;
+
         if (PhotonNetwork.IsMasterClient)
             PhotonNetwork.Destroy(this.gameObject);
     }

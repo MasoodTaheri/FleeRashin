@@ -95,11 +95,15 @@ public class luncher : MonoBehaviourPunCallbacks
         //Hashtable props = new Hashtable() { { luncher.PLAYER_READY, true } };
         //PhotonNetwork.LocalPlayer.SetCustomProperties(props);
 
-        PhotonNetwork.JoinRandomRoom();
+        //PhotonNetwork.JoinRandomRoom();
         InvokeRepeating("getping", 1, 1);
         //Debug.Log("NickName=" + PhotonNetwork.NickName);
         //Debug.Log("LocalPlayer.NickName=" + PhotonNetwork.LocalPlayer.NickName);
         //Myname = PhotonNetwork.NickName;// "masood" + Random.Range(0, 100).ToString();
+        StartButton.SetActive(true);
+        loading.gameObject.SetActive(false);
+
+        loading.gameObject.transform.GetChild(0).GetComponent<Text>().text = "Searching for Oponnent ...";
 
 
     }
@@ -137,13 +141,10 @@ public class luncher : MonoBehaviourPunCallbacks
     }
     public override void OnJoinedRoom()
     {
-        Debug.Log("OnJoinedRoom CurrentRoom.Name" + PhotonNetwork.CurrentRoom.Name);
+        Debug.Log("OnJoinedRoom CurrentRoom.Name:" + PhotonNetwork.CurrentRoom.Name);
         GetAllPlayersInRoom();
         //PhotonNetwork.Instantiate(playerPrefab.name, Vector3.zero, Quaternion.identity, 0);
-        StartButton.SetActive(true);
-        loading.gameObject.SetActive(false);
-
-        loading.gameObject.transform.GetChild(0).GetComponent<Text>().text = "Searching for Oponnent ...";
+        playermanager.Instance.startGameEvent();
     }
 
 
@@ -155,7 +156,7 @@ public class luncher : MonoBehaviourPunCallbacks
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        Debug.Log("OnPlayerEnteredRoom " + otherPlayer.NickName);
+        Debug.Log("OnPlayerLeftRoom " + otherPlayer.NickName);
         GetAllPlayersInRoom();
     }
 

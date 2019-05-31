@@ -19,6 +19,7 @@ public class playermanager : MonoBehaviour, IOnEventCallback
     public float forwardSpeed;
     public float rotateSpeed;
     public GameObject puncoin;
+    public static playermanager Instance;
 
 
 
@@ -29,7 +30,7 @@ public class playermanager : MonoBehaviour, IOnEventCallback
     // Use this for initialization
     void Start()
     {
-
+        Instance = this;
     }
 
     // Update is called once per frame
@@ -40,9 +41,10 @@ public class playermanager : MonoBehaviour, IOnEventCallback
             //Debug.Log("11111111");
             if (!outofgame)
             {
-                Debug.Log("EndOfRound_event calling");
-                PhotonNetwork.RaiseEvent(EndOfRound_event, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }
-                , new SendOptions { Reliability = true });
+                //Debug.Log("EndOfRound_event calling");
+                //PhotonNetwork.RaiseEvent(EndOfRound_event, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }
+                //, new SendOptions { Reliability = true });
+                GameFinished();
                 //music.Stop();
                 //StartCoroutine(result_show());
                 outofgame = true;
@@ -59,16 +61,16 @@ public class playermanager : MonoBehaviour, IOnEventCallback
                 ////Debug.Log("LoosecountForAd=" + PlayerPrefs.GetInt("LoosecountForAd", 0));
             }
 
-            if (Input.GetKeyUp(KeyCode.Q))
-            {
-                // PhotonNetwork.Instantiate(puncoin.name, Vector3.zero, Quaternion.identity);
-                GetComponent<Pickupmanager2>().GenerateItem();
-            }
-            if (Input.GetKeyUp(KeyCode.W))
-            {
-                // PhotonNetwork.Instantiate(puncoin.name, Vector3.zero, Quaternion.identity);
-                GetComponent<Pickupmanager2>().RemoveAll();
-            }
+            //if (Input.GetKeyUp(KeyCode.Q))
+            //{
+            //    // PhotonNetwork.Instantiate(puncoin.name, Vector3.zero, Quaternion.identity);
+            //    GetComponent<Pickupmanager2>().GenerateItem();
+            //}
+            //if (Input.GetKeyUp(KeyCode.W))
+            //{
+            //    // PhotonNetwork.Instantiate(puncoin.name, Vector3.zero, Quaternion.identity);
+            //    GetComponent<Pickupmanager2>().RemoveAll();
+            //}
 
 
         }
@@ -87,14 +89,17 @@ public class playermanager : MonoBehaviour, IOnEventCallback
     public void startGame()
     {
         Debug.Log("startGame RaiseEvent calling button");
-        PhotonNetwork.RaiseEvent(StartGame_event, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }
-        , new SendOptions { Reliability = true });
+        //PhotonNetwork.RaiseEvent(StartGame_event, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }
+        //, new SendOptions { Reliability = true });
         //PhotonNetwork.CurrentRoom.IsOpen = false;
         //PhotonNetwork.CurrentRoom.IsVisible = false;
+        //startGameEvent();
+        PhotonNetwork.JoinRandomRoom();
     }
 
     public void startGameEvent()
     {
+
 
         if (PlanePlayer != null)
         {
@@ -118,6 +123,7 @@ public class playermanager : MonoBehaviour, IOnEventCallback
         //PlanePlayer = Instantiate(playerPrefab).GetComponent<DefaultPlayerPlane>();
         //PlanePlayer = PhotonNetwork.Instantiate(playerPrefab.name,Vector3.zero,Quaternion.identity).GetComponent<DefaultPlayerPlane>();
         Vector3 spawnpoint = new Vector3(Random.Range(-3.0f, 3.0f), -6, Random.Range(-3.0f, 3.0f));
+
         PlanePlayer = PhotonNetwork.Instantiate(playerPrefab.name, spawnpoint, Quaternion.identity).GetComponent<DefaultPlayerPlane>();
         PlanePlayer.forwardSpeed = forwardSpeed;
         PlanePlayer.rotateSpeed = rotateSpeed;
@@ -165,28 +171,14 @@ public class playermanager : MonoBehaviour, IOnEventCallback
             //else
             //Debug.Log("PlanePlayer is null");
             //pv.RPC("planeBodyHit", RpcTarget.All);
-
-
-            music.Stop();
-            StartCoroutine(result_show());
-            //outofgame = true;
-            if (PlayerPrefs.GetInt("LoosecountForAd", 0) > 6)
-            {
-                PlayerPrefs.SetInt("LoosecountForAd", 0);
-                StartCoroutine(result_ad());
-            }
-            else
-            {
-                PlayerPrefs.SetInt("LoosecountForAd", PlayerPrefs.GetInt("LoosecountForAd", 0) + 1);
-            }
-
-            //Debug.Log("LoosecountForAd=" + PlayerPrefs.GetInt("LoosecountForAd", 0));
+            GameFinished();
         }
-        if (photonEvent.Code == StartGame_event)
-        {
-            Debug.Log("OnEvent StartGame_event is called " + photonEvent.Code.ToString());
-            startGameEvent();
-        }
+        //if (photonEvent.Code == StartGame_event)
+        //{
+        //    Debug.Log("OnEvent StartGame_event is called " + photonEvent.Code.ToString());
+        //    //startGameEvent();
+        //    PhotonNetwork.JoinRandomRoom();
+        //}
 
         if (photonEvent.Code == pickupItemGeneration)
         {
@@ -195,6 +187,25 @@ public class playermanager : MonoBehaviour, IOnEventCallback
             //Vector3 targetPosition = (Vector3)data[0];
 
         }
+    }
+
+    private void GameFinished()
+    {
+        music.Stop();
+        StartCoroutine(result_show());
+        //outofgame = true;
+        if (PlayerPrefs.GetInt("LoosecountForAd", 0) > 6)
+        {
+            PlayerPrefs.SetInt("LoosecountForAd", 0);
+            StartCoroutine(result_ad());
+        }
+        else
+        {
+            PlayerPrefs.SetInt("LoosecountForAd", PlayerPrefs.GetInt("LoosecountForAd", 0) + 1);
+        }
+
+        PhotonNetwork.LeaveRoom();
+        //Debug.Log("LoosecountForAd=" + PlayerPrefs.GetInt("LoosecountForAd", 0));
     }
 
     public void OnEnable()

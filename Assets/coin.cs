@@ -27,6 +27,7 @@ public abstract class PickupAbleABSClass : MonoBehaviourPun, IPunObservable
         Objs.Add(this);
         Icon = Instantiate(IconPrefab) as GameObject;
         Icon.transform.SetParent(CanvasRoot.transform);
+        Icon.GetComponent<RectTransform>().localScale = Vector3.one;
         Iconimage = Icon.GetComponent<Image>();
         Debug.Log("PickupAbleABSClass count=" + Objs.Count);
         //range = _range;
@@ -96,6 +97,8 @@ public abstract class PickupAbleABSClass : MonoBehaviourPun, IPunObservable
     {
 
     }
+
+
 }
 
 
@@ -121,4 +124,9 @@ public class coin : PickupAbleABSClass
 
         //Debug.Log(photonView.Owner.NickName);
     }
+    void OnDestroy()
+    {
+        Destroy();
+    }
+
 }

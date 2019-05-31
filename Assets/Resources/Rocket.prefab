@@ -57,7 +57,7 @@ GameObject:
   - component: {fileID: 65000013144791770}
   - component: {fileID: 114822831931997854}
   - component: {fileID: 114576207982427920}
-  - component: {fileID: 114721964571633746}
+  - component: {fileID: 114180376458163682}
   m_Layer: 0
   m_Name: Rocket
   m_TagString: Rocket
@@ -234,6 +234,30 @@ TrailRenderer:
   m_MinVertexDistance: 0.1
   m_Autodestruct: 0
   m_Emitting: 1
+--- !u!114 &114180376458163682
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000012813501954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb4c60168ac76554194c0b63e7497ac8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pos: {x: 0, y: 0, z: 0}
+  velocity: {x: 0, y: 0, z: 0}
+  rot: {x: 0, y: 0, z: 0, w: 0}
+  angularVelocity: {x: 0, y: 0, z: 0}
+  pv: {fileID: 114576207982427920}
+  rigidbody: {fileID: 54000012012848442}
+  PosLerpSpeed: 1
+  PosLerpFactor: 1
+  RotLerpSpeed: 20
+  RotLerpFactor: 1
+  ErrorInPos: {x: 0, y: 5}
+  ErrorInRot: {x: 0, y: 5}
+  uselerp: 1
 --- !u!114 &114576207982427920
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -251,34 +275,10 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 114721964571633746}
+  - {fileID: 114180376458163682}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &114721964571633746
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000012813501954}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 849d839b7e6af87408c150b2e9d37bc6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pos: {x: 0, y: 0, z: 0}
-  velocity: {x: 0, y: 0, z: 0}
-  rot: {x: 0, y: 0, z: 0, w: 0}
-  angularVelocity: {x: 0, y: 0, z: 0}
-  pv: {fileID: 114576207982427920}
-  rigidbody: {fileID: 54000012012848442}
-  PosLerpSpeed: 1
-  PosLerpFactor: 1
-  RotLerpSpeed: 20
-  RotLerpFactor: 1
-  ErrorInPos: 0
-  ErrorInRot: 0
-  uselerp: 1
 --- !u!114 &114822831931997854
 MonoBehaviour:
   m_ObjectHideFlags: 1

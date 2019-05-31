@@ -15,20 +15,20 @@ public class networkRigidbody2 : MonoBehaviourPun, IPunObservable
     public float RotLerpSpeed = 4;
     public float RotLerpFactor = 1;
     //public float updateTime = 0;
-    public float ErrorInPos = 0;
-    public float ErrorInRot = 0;
+    public Vector2 ErrorInPos;
+    public Vector2 ErrorInRot;
     private DefaultPlayerPlane playercode;
     public bool uselerp;
 
     // Use this for initialization
-    void Start()
+    protected void Start()
     {
         pv = GetComponent<PhotonView>();
         playercode = GetComponent<DefaultPlayerPlane>();
     }
 
     // Update is called once per frame
-    void Update()
+    protected void Update()
     {
 
         //if (!pv.IsMine)
@@ -42,7 +42,7 @@ public class networkRigidbody2 : MonoBehaviourPun, IPunObservable
 
     }
 
-    public void FixedUpdate()
+    protected void FixedUpdate()
     {
         if (!pv.IsMine)
         {
@@ -74,11 +74,9 @@ public class networkRigidbody2 : MonoBehaviourPun, IPunObservable
 
             }
 
-
-            ErrorInPos = Vector3.Distance(transform.position, pos);
-            ErrorInRot = Quaternion.Angle(transform.rotation, rot);
-
+            CalculateError();
         }
+
 
     }
 
@@ -97,9 +95,6 @@ public class networkRigidbody2 : MonoBehaviourPun, IPunObservable
             stream.SendNext(angularVelocity);
             if (playercode != null)
                 stream.SendNext(playercode.Health);
-
-
-
         }
         else
         {
@@ -116,7 +111,14 @@ public class networkRigidbody2 : MonoBehaviourPun, IPunObservable
             pos += rigidbody.velocity * lag;
             if (playercode != null)
                 playercode.Health = (int)stream.ReceiveNext();
+
         }
+    }
+
+    public void CalculateError()
+    {
+        ErrorInPos.x = Vector3.Distance(transform.position, pos);
+        ErrorInRot.y = Quaternion.Angle(transform.rotation, rot);
 
     }
 }
