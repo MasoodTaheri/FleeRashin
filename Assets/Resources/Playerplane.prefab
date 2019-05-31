@@ -1044,6 +1044,7 @@ MonoBehaviour:
     type: 2}
   planeExplusion: {fileID: 1000010782257932, guid: 95763d1c5e9ce4445b10296a19b0c1d5,
     type: 2}
+  mycolor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!212 &212148923957943490
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -1125,7 +1126,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 2b8d372da11121c46a7516fe2c9a6a52, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 92b3338b1fcd1c04ea363f9cbebcc157, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

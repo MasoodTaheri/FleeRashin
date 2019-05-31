@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
-
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 [System.Serializable]
 public class Wing2
@@ -20,7 +20,7 @@ public class Wing2
 }
 
 [System.Serializable]
-public class DefaultPlayerPlane : MonoBehaviourPun
+public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
 {
     public PhotonView pv;
     private float Leftweight;
@@ -55,6 +55,10 @@ public class DefaultPlayerPlane : MonoBehaviourPun
     public GameObject particlePrefab;
     public GameObject RocketPrefab;
     public GameObject planeExplusion;
+    [SerializeField]
+    private Color mycolor;
+
+
 
     void Start()
     {
@@ -89,7 +93,24 @@ public class DefaultPlayerPlane : MonoBehaviourPun
         //rightWing.cc.enter += WingCollision;
         //rightWing.cc.destroy += WingOnDestroy;
         if (pv.IsMine)
+        {
+            mycolor = playermanager.Instance.planeColorClass.GetRandomColor();
+            Debug.Log("my color is set to " + playermanager.Instance.planeColorClass.GetColorname(mycolor));
+            //mycolor.ToString());
+            SetMyColor(mycolor);
+            SendMyColor();
             this.gameObject.name += "Mine";
+        }
+        else
+        {
+            object playerproperty_Color;
+            if (pv.Owner.CustomProperties.TryGetValue("Color", out playerproperty_Color))
+            {
+                mycolor = playermanager.Instance.planeColorClass.GetColorByNmae((string)playerproperty_Color);
+                SetMyColor(mycolor);
+            }
+        }
+
         //else
         //    rb.isKinematic = true;
 
@@ -99,6 +120,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun
 
         //tmp.transform.SetParent(canvas.transform, false);
         tmp.transform.SetParent(GameObject.FindObjectOfType<Canvas>().gameObject.transform, false);
+
     }
 
     public void moveforward()
@@ -136,7 +158,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun
     {
         GameObject Bullet1 = Instantiate(RocketPrefab) as GameObject;
         Bullet1.transform.position = transform.position + transform.forward * 2;
-            //- new Vector3(0, -2, 0);
+        //- new Vector3(0, -2, 0);
         Bullet1.transform.rotation = transform.rotation;
 
     }
@@ -592,6 +614,41 @@ public class DefaultPlayerPlane : MonoBehaviourPun
     //        GameObject.Destroy(rightWing.ps.gameObject);
     //    }
     //}
+
+    public void SetPlayerCustomPropertise()
+    {
+        int KillScore = (int)PhotonNetwork.LocalPlayer.CustomProperties["Color"];
+        mycolor = Color.blue;
+        Hashtable hash = new Hashtable();
+        hash.Add("Color", mycolor);
+        PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+    }
+
+    public Color GetMyColor()
+    {
+        return mycolor;
+    }
+    public void SetMyColor(Color cl)
+    {
+        Debug.Log("Set color to " + playermanager.Instance.planeColorClass.GetColorname(cl));
+        mycolor = cl;
+        transform.GetChild(0).GetComponent<SpriteRenderer>().color = mycolor;
+    }
+
+    public void SendMyColor()
+    {
+
+        Debug.Log("sending color");
+        Hashtable hash = new Hashtable();
+        hash.Add("Color", playermanager.Instance.planeColorClass.GetColorname(mycolor));
+        PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+        PlayerBindingObjectClass.update();
+    }
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+        //Debug.Log("OnPhotonInstantiate");
+        PlayerBindingObjectClass.update();
+    }
 }
 
 

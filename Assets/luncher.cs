@@ -5,7 +5,90 @@ using UnityEngine.UI;
 using Photon.Realtime;
 using Photon.Pun;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using ExitGames.Client.Photon;
 
+
+[System.Serializable]
+public class PlayerBindingObjectClass
+{
+    public GameObject obj;
+    public string Nickname;
+    public string PlayerID;
+    public Player owner;
+    public Color cl;
+
+    private static luncher lunch;
+
+
+    public static void update()
+    {
+        if (lunch == null)
+            lunch = GameObject.Find("Manager").GetComponent<luncher>();
+        GameObject[] allPlane = GameObject.FindGameObjectsWithTag("Playerbody");
+        if (allPlane.Length != 0)
+        {
+            lunch.PlayersInRoom2.Clear();
+            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+            {
+                PlayerBindingObjectClass pbo = new PlayerBindingObjectClass();
+                pbo.Nickname = PhotonNetwork.PlayerList[i].NickName;
+                pbo.PlayerID = PhotonNetwork.PlayerList[i].UserId;
+
+
+                object playerproperty_Color;
+                if (PhotonNetwork.PlayerList[i].CustomProperties.TryGetValue("Color", out playerproperty_Color))
+                {
+                    pbo.cl = playermanager.Instance.planeColorClass.GetColorByNmae((string)playerproperty_Color);
+                }
+
+
+                for (int j = 0; j < allPlane.Length; j++)
+                {
+                    if (allPlane[j].GetComponent<PhotonView>().Owner == PhotonNetwork.PlayerList[i])
+                    {
+                        pbo.obj = allPlane[j];
+                        pbo.owner = PhotonNetwork.PlayerList[i];
+                        break;
+                    }
+                }
+                lunch.PlayersInRoom2.Add(pbo);
+            }
+        }
+    }
+
+    public static GameObject GetObject(Player player)
+    {
+        if (lunch == null)
+            lunch = GameObject.Find("Manager").GetComponent<luncher>();
+        foreach (PlayerBindingObjectClass pbo in lunch.PlayersInRoom2)
+        {
+            if (pbo.owner == player)
+                return pbo.obj;
+        }
+
+        Debug.LogError("Error getting player obj");
+        return null;
+    }
+
+    public static void Setcolor(Player player, string _cl)
+    {
+        Color cl = playermanager.Instance.planeColorClass.GetColorByNmae(_cl);
+
+        Debug.Log(player.NickName + " color=" + _cl);
+        if (lunch == null)
+            lunch = GameObject.Find("Manager").GetComponent<luncher>();
+        foreach (PlayerBindingObjectClass pbo in lunch.PlayersInRoom2)
+        {
+            if (pbo.owner == player)
+                pbo.cl = cl;
+        }
+
+        //Debug.LogError("Error getting player obj");
+        //return null;
+    }
+
+
+}
 
 public class luncher : MonoBehaviourPunCallbacks
 {
@@ -13,6 +96,7 @@ public class luncher : MonoBehaviourPunCallbacks
     //public string Lobbyname;
     public string roomname;
     public List<string> playersInRoom;
+    public List<PlayerBindingObjectClass> PlayersInRoom2;
     //public GameObject playerPrefab;
     public int ping;
     public Image pingMeter;
@@ -145,6 +229,7 @@ public class luncher : MonoBehaviourPunCallbacks
         GetAllPlayersInRoom();
         //PhotonNetwork.Instantiate(playerPrefab.name, Vector3.zero, Quaternion.identity, 0);
         playermanager.Instance.startGameEvent();
+        //GetAllPlayersInRoom();
     }
 
 
@@ -188,18 +273,50 @@ public class luncher : MonoBehaviourPunCallbacks
             playersInRoom.Add(PhotonNetwork.PlayerList[i].NickName);
         }
 
-    //    foreach (Player p in PhotonNetwork.PlayerList)
-    //    {
-    //        //Debug.Log("player[" + p.ActorNumber + "].NickName=" + p.NickName);
-    //        //Debug.Log("player[" + p.ActorNumber + "].UserId=" + p.UserId);
-    //        //Debug.Log("player[" + p.ActorNumber + "].ActorNumber=" + p.ActorNumber);
-    //        Debug.LogFormat("player[{0}]  NickName ={1}    UserId={2}   ActorNumber={3}", p.ActorNumber, p.NickName
-    //, p.UserId, p.ActorNumber);
+        //    foreach (Player p in PhotonNetwork.PlayerList)
+        //    {
+        //        //Debug.Log("player[" + p.ActorNumber + "].NickName=" + p.NickName);
+        //        //Debug.Log("player[" + p.ActorNumber + "].UserId=" + p.UserId);
+        //        //Debug.Log("player[" + p.ActorNumber + "].ActorNumber=" + p.ActorNumber);
+        //        Debug.LogFormat("player[{0}]  NickName ={1}    UserId={2}   ActorNumber={3}", p.ActorNumber, p.NickName
+        //, p.UserId, p.ActorNumber);
 
-    //        //playersInRoom.Add(p.NickName);
-    //    }
+        //        //playersInRoom.Add(p.NickName);
+        //    }
+
+
+
+
+
+
 
     }
+
+    //public void Fill_PlayerBindingObjectClass()
+    //{
+    //    GameObject[] allPlane = GameObject.FindGameObjectsWithTag("Playerbody");
+    //    if (allPlane.Length != 0)
+    //    {
+    //        PlayersInRoom2.Clear();
+    //        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+    //        {
+    //            PlayerBindingObjectClass pbo = new PlayerBindingObjectClass();
+    //            pbo.Nickname = PhotonNetwork.PlayerList[i].NickName;
+    //            pbo.PlayerID = PhotonNetwork.PlayerList[i].UserId;
+
+    //            for (int j = 0; j < allPlane.Length; j++)
+    //            {
+    //                if (allPlane[j].GetComponent<PhotonView>().Owner == PhotonNetwork.PlayerList[i])
+    //                {
+    //                    pbo.obj = allPlane[j];
+    //                    pbo.owner = PhotonNetwork.PlayerList[i];
+    //                    break;
+    //                }
+    //            }
+    //            PlayersInRoom2.Add(pbo);
+    //        }
+    //    }
+    //}
     public const string PLAYER_READY = "IsPlayerReady";
     //public const string PLAYER_NotREADY = "PlayerNotReady";
 
@@ -211,6 +328,31 @@ public class luncher : MonoBehaviourPunCallbacks
         {
             Debug.Log(PLAYER_READY + "  " + ((bool)isPlayerReady).ToString());
         }
+
+
+        object playerproperty;
+        if (changedProps.TryGetValue("Color", out playerproperty))
+        {
+            Debug.Log("Player propertise color update " + (string)playerproperty);
+            GameObject go = PlayerBindingObjectClass.GetObject(targetPlayer);
+            if (go != null)
+            {
+                Color cl = playermanager.Instance.planeColorClass.GetColorByNmae((string)playerproperty);
+                go.GetComponent<DefaultPlayerPlane>().SetMyColor(cl);
+                //PlayerBindingObjectClass.Setcolor(targetPlayer, (string)playerproperty);
+            }
+            else
+                Debug.LogError("cound not find plNE TO SET COLOR");
+
+            
+
+        }
+    }
+
+    public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
+    {
+        //base.OnRoomPropertiesUpdate(propertiesThatChanged);
+
 
     }
 

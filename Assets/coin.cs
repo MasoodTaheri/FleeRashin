@@ -29,7 +29,7 @@ public abstract class PickupAbleABSClass : MonoBehaviourPun, IPunObservable
         Icon.transform.SetParent(CanvasRoot.transform);
         Icon.GetComponent<RectTransform>().localScale = Vector3.one;
         Iconimage = Icon.GetComponent<Image>();
-        Debug.Log("PickupAbleABSClass count=" + Objs.Count);
+        //Debug.Log("PickupAbleABSClass count=" + Objs.Count);
         //range = _range;
     }
 
@@ -53,14 +53,14 @@ public abstract class PickupAbleABSClass : MonoBehaviourPun, IPunObservable
             if (oldpos != transform.position)
             {
                 stream.SendNext(transform.position);
-                Debug.Log("writepos");
+                //Debug.Log("writepos");
                 oldpos = transform.position;
             }
 
         }
         else
         {
-            Debug.Log("readpos");
+            //Debug.Log("readpos");
             transform.position = (Vector3)stream.ReceiveNext();
         }
     }

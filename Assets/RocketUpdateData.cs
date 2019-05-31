@@ -37,8 +37,8 @@ public class RocketUpdateData : networkRigidbody2
     {
         //if (pv.IsMine)
         //    return;
-        if (ErrorInPos.x > ErrorInPos.y) Debug.LogError(gameObject.name +" Pos delta is too long" + ErrorInPos.x);
-        if (ErrorInRot.x > ErrorInRot.y) Debug.LogError(gameObject.name + " rot delta is too long " + ErrorInRot.x);
+        //if (ErrorInPos.x > ErrorInPos.y) Debug.LogError(gameObject.name +" Pos delta is too long" + ErrorInPos.x);
+        //if (ErrorInRot.x > ErrorInRot.y) Debug.LogError(gameObject.name + " rot delta is too long " + ErrorInRot.x);
         rigidbody.position = pos;
         rigidbody.rotation = rot;
 

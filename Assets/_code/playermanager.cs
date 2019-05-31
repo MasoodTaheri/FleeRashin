@@ -5,6 +5,64 @@ using Photon.Pun;
 using Photon.Realtime;
 using ExitGames.Client.Photon;
 
+
+[System.Serializable]
+public class PlaneColorClass
+{
+    public List<Color> playercolors;
+    public List<string> playercolorsName;
+
+
+    void fillcolors()
+    {
+        playercolors.Add(Color.white); playercolorsName.Add("white");
+        playercolors.Add(Color.red); playercolorsName.Add("red");
+        playercolors.Add(Color.green); playercolorsName.Add("green");
+        playercolors.Add(Color.blue); playercolorsName.Add("blue");
+        //playercolors.Add(Color.black); playercolorsName.Add("black");
+        playercolors.Add(Color.yellow); playercolorsName.Add("yellow");
+        playercolors.Add(Color.magenta); playercolorsName.Add("magenta");
+        playercolors.Add(Color.grey); playercolorsName.Add("grey");
+        playercolors.Add(Color.cyan); playercolorsName.Add("cyan");
+    }
+
+    public PlaneColorClass()
+    {
+        playercolors = new List<Color>();
+        playercolorsName = new List<string>();
+        fillcolors();
+    }
+
+    public Color GetRandomColor()
+    {
+        return playercolors[Random.Range(0, playercolors.Count)];
+    }
+    public string GetColorname(Color cl)
+    {
+        for (int i = 0; i < playercolors.Count; i++)
+            if (playercolors[i] == cl)
+                return playercolorsName[i];
+
+        Debug.LogError("Cannot find colo with value"+cl.ToString());
+        return "";
+    }
+
+    public Color GetColorByNmae(string colorName)
+    {
+        for (int i = 0; i < playercolorsName.Count; i++)
+            if (playercolorsName[i] == colorName)
+                return playercolors[i];
+
+
+        //foreach (Color cl in playercolors)
+        //    if (cl.ToString() == colorName)
+        //        return cl;
+
+        Debug.LogError("Cannot find clor with name=" + colorName);
+        return Color.black;
+    }
+}
+
 public class playermanager : MonoBehaviour, IOnEventCallback
 {
     public static DefaultPlayerPlane PlanePlayer;
@@ -20,6 +78,7 @@ public class playermanager : MonoBehaviour, IOnEventCallback
     public float rotateSpeed;
     public GameObject puncoin;
     public static playermanager Instance;
+    public PlaneColorClass planeColorClass;
 
 
 
@@ -27,10 +86,13 @@ public class playermanager : MonoBehaviour, IOnEventCallback
     private readonly byte StartGame_event = 1;
     public static readonly byte pickupItemGeneration = 2;
 
+    public bool Generate_near;
+
     // Use this for initialization
     void Start()
     {
         Instance = this;
+        planeColorClass = new PlaneColorClass();
     }
 
     // Update is called once per frame
@@ -88,7 +150,7 @@ public class playermanager : MonoBehaviour, IOnEventCallback
 
     public void startGame()
     {
-        Debug.Log("startGame RaiseEvent calling button");
+        //Debug.Log("startGame RaiseEvent calling button");
         //PhotonNetwork.RaiseEvent(StartGame_event, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }
         //, new SendOptions { Reliability = true });
         //PhotonNetwork.CurrentRoom.IsOpen = false;
@@ -100,6 +162,7 @@ public class playermanager : MonoBehaviour, IOnEventCallback
     public void startGameEvent()
     {
 
+        //Debug.Log("startGameEvent function ");
 
         if (PlanePlayer != null)
         {
@@ -109,7 +172,6 @@ public class playermanager : MonoBehaviour, IOnEventCallback
         GetComponent<Pickupmanager2>().GenerateItem();
 
 
-        Debug.Log("startGameEvent function ");
         uiController.Instanse.mainmenu.SetActive(false);
         uiController.Instanse.Ingame.SetActive(true);
         uiController.Instanse.Powerup.SetActive(true);
@@ -122,7 +184,11 @@ public class playermanager : MonoBehaviour, IOnEventCallback
         //PlanePlayer = new DefaultPlayerPlane(forwardSpeed, rotateSpeed, -1, null, playerPrefab);
         //PlanePlayer = Instantiate(playerPrefab).GetComponent<DefaultPlayerPlane>();
         //PlanePlayer = PhotonNetwork.Instantiate(playerPrefab.name,Vector3.zero,Quaternion.identity).GetComponent<DefaultPlayerPlane>();
-        Vector3 spawnpoint = new Vector3(Random.Range(-3.0f, 3.0f), -6, Random.Range(-3.0f, 3.0f));
+        Vector3 spawnpoint;
+        if (Generate_near)
+            spawnpoint = new Vector3(Random.Range(-3.0f, 3.0f), -6, Random.Range(-3.0f, 3.0f));
+        else
+            spawnpoint = new Vector3(Random.Range(-30.0f, 30.0f), -6, Random.Range(-30.0f, 30.0f));
 
         PlanePlayer = PhotonNetwork.Instantiate(playerPrefab.name, spawnpoint, Quaternion.identity).GetComponent<DefaultPlayerPlane>();
         PlanePlayer.forwardSpeed = forwardSpeed;
@@ -217,5 +283,7 @@ public class playermanager : MonoBehaviour, IOnEventCallback
     {
         PhotonNetwork.RemoveCallbackTarget(this);
     }
+
+
 
 }
