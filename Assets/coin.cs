@@ -69,11 +69,11 @@ public abstract class PickupAbleABSClass : MonoBehaviourPun, IPunObservable
     {
         if (!PhotonNetwork.IsMasterClient)
         {
-            Debug.Log("triggered but not master");
+            //Debug.Log("triggered but not master");
             return;
         }
 
-        Debug.Log("Trigger hit " + type.ToString());
+        //Debug.Log("Trigger hit " + type.ToString());
         Repos();
     }
 

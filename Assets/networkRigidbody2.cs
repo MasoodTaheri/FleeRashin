@@ -20,6 +20,7 @@ public class networkRigidbody2 : MonoBehaviourPun, IPunObservable
     private DefaultPlayerPlane playercode;
     public bool uselerp;
 
+    //bool initOnce = false;
     // Use this for initialization
     protected void Start()
     {
@@ -95,6 +96,16 @@ public class networkRigidbody2 : MonoBehaviourPun, IPunObservable
             stream.SendNext(angularVelocity);
             if (playercode != null)
                 stream.SendNext(playercode.Health);
+
+            //if (!initOnce)
+            //{
+            //    if (playercode is EnemyPlane)
+            //    {
+            //        stream.SendNext((playercode as EnemyPlane).AIid);
+            //        Debug.Log("send aiid");
+            //    }
+            //    initOnce = true;
+            //}
         }
         else
         {
@@ -111,6 +122,16 @@ public class networkRigidbody2 : MonoBehaviourPun, IPunObservable
             pos += rigidbody.velocity * lag;
             if (playercode != null)
                 playercode.Health = (int)stream.ReceiveNext();
+
+            //if (!initOnce)
+            //{
+            //    if (playercode is EnemyPlane)
+            //    {
+            //        (playercode as EnemyPlane).AIid = (int)stream.ReceiveNext();
+            //        Debug.Log("receive  aiid");
+            //    }
+            //    initOnce = true;
+            //}
 
         }
     }

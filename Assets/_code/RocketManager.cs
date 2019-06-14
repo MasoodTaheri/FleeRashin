@@ -42,7 +42,13 @@ public class UIPOSClass
             if (ret.x > Screen.width) indicator.transform.rotation = Quaternion.Euler(0, 0, -90);
         else if (ret.x < 0) indicator.transform.rotation = Quaternion.Euler(0, 0, 90);
 
-
+        //Debug.Log(Vector3.Distance(target, cam.transform.position));
+        float dist = Vector3.Distance(target, cam.transform.position);
+        Color cl = indicator.color;
+        if (dist < 50) cl.a = 0.5f;
+        if (dist < 20) cl.a = 1;
+        if (dist > 50) cl.a = 0.25f;
+        indicator.color = cl;
 
     }
 }
@@ -114,7 +120,7 @@ public class RocketManager : MonoBehaviour
                 //rocketlist[i] = new Rocket(forwardSpeed, rotateSpeed, lifetime, null, RocketPrefab, RocketRoot);
                 //rocketlist[i] = Instantiate(RocketPrefab).GetComponent<Rocket>();
                 rocketlist[i] = PhotonNetwork.InstantiateSceneObject(RocketPrefab.name,
-                    new Vector3(0,-6,0),Quaternion.identity).GetComponent<Rocket>();
+                    new Vector3(0, -6, 0), Quaternion.identity).GetComponent<Rocket>();
                 //rocketlist[i].gameObject.transform.SetParent(RocketRoot.transform);
 
                 //rocketlist[i].forwardSpeed = forwardSpeed;

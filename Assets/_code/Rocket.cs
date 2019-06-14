@@ -53,10 +53,10 @@ public class Rocket : MonoBehaviour, IShoot
 
         //target = GameObject.FindGameObjectWithTag("Playerbody");
         canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
-        
+
         //target = GameObject.Find("Playerplane");
         //GameObject.Destroy(obj, lifetime + UnityEngine.Random.Range(0, 5));
- 
+
 
         RocketUIPrefab = Resources.Load("RocketUIPos") as GameObject;
         RocketUI = GameObject.Instantiate(RocketUIPrefab) as GameObject;
@@ -65,24 +65,27 @@ public class Rocket : MonoBehaviour, IShoot
 
 
         //forwardSpeed += Random.Range(0, 1.5f);
-        
+
 
         //ColliderCallback cc = this.gameObject.AddComponent<ColliderCallback>();
         //cc.enter += Collision;
         //cc.destroy += OnDestroy;
         ps = transform.GetChild(1).GetComponent<ParticleSystem>();
-
+        rb = GetComponent<Rigidbody>();
+        deltaPosTarget = new Vector3(UnityEngine.Random.Range(-0.33f, 0.33f), 0, UnityEngine.Random.Range(-0.22f, 0.22f));
+        rotateSpeed += UnityEngine.Random.Range(-0.5f, 0.5f);
+        life += UnityEngine.Random.Range(0, 5f);
         if (!PhotonNetwork.IsMasterClient)
             return;
-        deltaPosTarget = new Vector3(UnityEngine.Random.Range(-0.33f, 0.33f), 0, UnityEngine.Random.Range(-0.22f, 0.22f));
-        rb = GetComponent<Rigidbody>();
-        rotateSpeed += UnityEngine.Random.Range(-0.5f, 0.5f);
+
+
+
 
         findplayer();
 
         //cc.InvokeRepeating("findplayer", 0, 1);
         //explusionList = new List<ExplusionClass>();
-        life += UnityEngine.Random.Range(0, 5f);
+
         transform.position = spawnpos();
 
     }

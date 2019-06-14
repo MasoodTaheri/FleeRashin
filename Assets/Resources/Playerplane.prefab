@@ -909,6 +909,7 @@ MonoBehaviour:
   bulletSpeed: 10
   aus: {fileID: 82928477635179920}
   Shootdelay: 0.2
+  plane: {fileID: 114775065588764218}
   damage: 1
 --- !u!114 &114146665314938386
 MonoBehaviour:
@@ -1011,18 +1012,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pv: {fileID: 114146665314938386}
+  Leftweight: 0
+  Rightweight: 0
   rotateFactor: {x: 0, y: 0}
-  flareObj: {fileID: 0}
-  leftWing:
-    PS_winghitPrefab: {fileID: 0}
-    ps: {fileID: 0}
-    Health: 1
-    root: {fileID: 0}
-  rightWing:
-    PS_winghitPrefab: {fileID: 0}
-    ps: {fileID: 0}
-    Health: 1
-    root: {fileID: 0}
+  RotateLeftFactor: 0
+  RotateRightFactor: 0
   readytodestroy: 0
   forwardSpeed: 0
   rotateSpeed: 0

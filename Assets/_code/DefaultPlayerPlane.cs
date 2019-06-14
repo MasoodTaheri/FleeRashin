@@ -23,19 +23,19 @@ public class Wing2
 public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
 {
     public PhotonView pv;
-    private float Leftweight;
-    private float Rightweight;
+    public float Leftweight;
+    public float Rightweight;
     public Vector2 rotateFactor;//winghit
 
-    private float RotateLeftFactor;//touch left
-    private float RotateRightFactor;//touch right
-    public GameObject flareObj;
-    [SerializeField]
-    Wing2 leftWing;
-    [SerializeField]
-    Wing2 rightWing;
+    public float RotateLeftFactor;//touch left
+    public float RotateRightFactor;//touch right
+    protected GameObject flareObj;
+    //[SerializeField]
+    protected Wing2 leftWing;
+    //[SerializeField]
+    protected Wing2 rightWing;
     public bool readytodestroy = false;
-    private gun planeGun;
+    protected gun planeGun;
     private AudioSource sfx;
 
 
@@ -46,7 +46,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
     //public Sprite Sprite;
     //public GameObject obj;
     public GameObject IndicatorPrefab;
-    private Image Indicator;
+    protected Image Indicator;
 
     public ColliderDataClass[] colliders;
     public enum PlanePartEnum { body, LeftWing, rightWing }
@@ -56,7 +56,9 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
     public GameObject RocketPrefab;
     public GameObject planeExplusion;
     [SerializeField]
-    private Color mycolor;
+    protected Color mycolor;
+    //public bool playerControlable;
+    //public bool ControlableOnThisDevice;
 
 
 
@@ -82,46 +84,90 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
         leftWing = new Wing2();
         leftWing.root = transform.GetChild(2).gameObject;
         leftWing.PS_winghitPrefab = Resources.Load("Particle_winghit") as GameObject;
-        //leftWing.cc = leftWing.root.AddComponent<ColliderCallback>();
-        //leftWing.cc.enter += WingCollision;
-        //leftWing.cc.destroy += WingOnDestroy;
 
         rightWing = new Wing2();
         rightWing.root = transform.GetChild(1).gameObject;
         rightWing.PS_winghitPrefab = Resources.Load("Particle_winghit") as GameObject;
-        //rightWing.cc = transform.GetChild(1).gameObject.AddComponent<ColliderCallback>();
-        //rightWing.cc.enter += WingCollision;
-        //rightWing.cc.destroy += WingOnDestroy;
-        if (pv.IsMine)
-        {
-            mycolor = playermanager.Instance.planeColorClass.GetRandomColor();
-            Debug.Log("my color is set to " + playermanager.Instance.planeColorClass.GetColorname(mycolor));
-            //mycolor.ToString());
-            SetMyColor(mycolor);
-            SendMyColor();
-            this.gameObject.name += "Mine";
-        }
-        else
-        {
-            object playerproperty_Color;
-            if (pv.Owner.CustomProperties.TryGetValue("Color", out playerproperty_Color))
-            {
-                mycolor = playermanager.Instance.planeColorClass.GetColorByNmae((string)playerproperty_Color);
-                SetMyColor(mycolor);
-            }
-        }
 
-        //else
-        //    rb.isKinematic = true;
-
+        //selectColor();
 
         GameObject tmp = Instantiate(IndicatorPrefab) as GameObject;
         Indicator = tmp.GetComponent<Image>();
 
-        //tmp.transform.SetParent(canvas.transform, false);
         tmp.transform.SetParent(GameObject.FindObjectOfType<Canvas>().gameObject.transform, false);
+        IsControllable();
+
+        if (IsControllable())
+        {
+            this.gameObject.name += "Mine";// + ((this is EnemyPlane) ? "_enemy" : "");
+        }
 
     }
+
+    public bool IsInturn()
+    {
+        //Cuangvel = rb.angularVelocity.magnitude;
+        //return (Cuangvel > angvelMax);
+
+        return (Rightweight != 0) || (Leftweight != 0);
+
+
+    }
+
+    public virtual bool IsControllable()
+    {
+        //Debug.Log("pv.IsMine=" + pv.IsMine, this.gameObject);
+        //Debug.Log("IsControllable by DefaultPlayerPlane" + pv.IsMine);
+        //ControlableOnThisDevice = false;
+        //playerControlable = pv.IsMine;
+
+        return pv.IsMine;
+    }
+
+
+    //private void selectColor()
+    //{
+    //    if (IsControllable())
+    //    {
+    //        mycolor = playermanager.Instance.planeColorClass.GetRandomColor();
+    //        //Debug.Log("my color is set to " + playermanager.Instance.planeColorClass.GetColorname(mycolor));
+    //        //mycolor.ToString());
+    //        SetMyColor(mycolor);
+    //        SendMyColor();
+    //        this.gameObject.name += "Mine" + ((this is EnemyPlane) ? "_enemy" : "");
+    //    }
+    //    else
+    //    {
+    //        object playerproperty_Color;
+    //        if (pv.Owner == null)
+    //        {
+    //            Debug.Log("pv.Owner is null", this.gameObject);
+    //            if (this is EnemyPlane)
+    //            {
+    //                Debug.Log("this is enemy", this.gameObject);
+    //                if (PhotonNetwork.CurrentRoom.CustomProperties.
+    //                    TryGetValue("AI" + (this as EnemyPlane).AIid.ToString() + "Color",
+    //                    out playerproperty_Color))
+    //                {
+    //                    Debug.Log("get roomprop  read " + "AI" + (this as EnemyPlane).AIid.ToString() + "Color"
+    //                        + "=" + (string)playerproperty_Color, this.gameObject);
+    //                    mycolor = playermanager.Instance.planeColorClass.GetColorByNmae((string)playerproperty_Color);
+    //                    SetMyColor(mycolor);
+    //                }
+
+    //            }
+
+    //        }
+    //        else
+    //        if (pv.Owner.CustomProperties.TryGetValue("Color", out playerproperty_Color))
+    //        {
+    //            Debug.Log("other player color=" + (string)playerproperty_Color, this.gameObject);
+    //            mycolor = playermanager.Instance.planeColorClass.GetColorByNmae((string)playerproperty_Color);
+    //            SetMyColor(mycolor);
+    //        }
+    //    }
+
+    //}
 
     public void moveforward()
     {
@@ -137,12 +183,18 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
     }
     public void StartShoot()
     {
+        //Debug.Log("StartShoot " + "IsControllable=" + IsControllable());
+        if (!IsControllable())
+            return;
+
         if (planeGun == null)
             planeGun = GetComponent<gun>();
         planeGun.Shoot(true);
     }
     public void EndShoot()
     {
+        if (!IsControllable())
+            return;
         if (planeGun == null)
             planeGun = GetComponent<gun>();
         planeGun.Shoot(false);
@@ -150,6 +202,8 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
 
     public void ShootRocket()
     {
+        if (!IsControllable())
+            return;
         pv.RPC("ShootRocket_Rpc", RpcTarget.All);
     }
 
@@ -215,7 +269,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
 
         return false;
     }
-    protected void rotate()
+    protected virtual void rotate()
     {
         transform.Rotate(0, rotateSpeed * Time.deltaTime * (Rightweight - Leftweight), 0);
     }
@@ -234,6 +288,9 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
 
     private void InputManager()
     {
+        if (!(this is DefaultPlayerPlane))
+            return;
+
         //rotateFactor += new Vector2(1 - leftWing.Health, 1 - rightWing.Health);
         if (rotateFactor.x > 0.5 && leftWing.Health < 0) rotateFactor.x += leftWing.Health;
         if (rotateFactor.y > 0.5 && rightWing.Health < 0) rotateFactor.y += rightWing.Health;
@@ -250,13 +307,13 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
         Healthbar.transform.localScale = new Vector3(Health / 100.0f, 1, 1);
     }
 
-    public void Update()
+    public virtual void Update()
     {
 
         UIPOSClass.UIposArrow(transform.position, Indicator);
         updateHealthbar();
 
-        if (!pv.IsMine && PhotonNetwork.IsConnected)
+        if (!IsControllable() && PhotonNetwork.IsConnected)
             return;
 
 
@@ -291,9 +348,9 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
     //public void Collision(Collision collision, GameObject me)
 
 
-    public void OnCollisionEnter(Collision collision)
+    public virtual void OnCollisionEnter(Collision collision)
     {
-        if (!pv.IsMine && PhotonNetwork.IsConnected)
+        if (!IsControllable() && PhotonNetwork.IsConnected)
             return;
 
         Debug.Log("Collision with " + collision.gameObject.name + "  tag=" + collision.gameObject.tag);
@@ -424,7 +481,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
 
     public void OnTriggerEnter(Collider collision)
     {
-        Debug.Log("plane hit by " + collision.gameObject.tag);
+        //Debug.Log("plane hit by " + collision.gameObject.tag);
 
 
         if (collision.gameObject.tag == "bullet")
@@ -436,17 +493,17 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
             BulletEffect.transform.SetParent(this.transform);
             Destroy(BulletEffect, 3);
 
-            Debug.Log(collision.gameObject.name);
+            //Debug.Log(collision.gameObject.name);
 
-            if (!pv.IsMine && PhotonNetwork.IsConnected)
+            if (!IsControllable() && PhotonNetwork.IsConnected)
                 return;
 
             //BulletCode bc = collision.gameObject.GetComponent<BulletCode>();
-            if (bc.owner == pv.Owner)
-            {
-                Debug.Log("I hit myself");
-                return;
-            }
+            //if (bc.owner == pv.Owner)
+            //{
+            //    Debug.Log("I hit myself");
+            //    return;
+            //}
 
             //for (int i = 0; i < colliders.Length; i++)
             //    if (collision.contacts[0].thisCollider == colliders[i].collider)
@@ -492,7 +549,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
 
             //Debug.Log(collision.gameObject.name);
 
-            if (!pv.IsMine && PhotonNetwork.IsConnected)
+            if (!IsControllable() && PhotonNetwork.IsConnected)
                 return;
 
 
@@ -532,6 +589,25 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
             Destroy(Instantiate(planeExplusion, transform.position, Quaternion.identity) as GameObject, 5);
             destroy();
         }
+    }
+
+
+    //called by GeneratePlane in player manager  with RpcTarget.AllBufferedViaServer
+    [PunRPC]
+    public void SetColor(string color)
+    {
+        //Debug.Log("SetColor called with color=" + color);
+        mycolor = playermanager.Instance.planeColorClass.GetColorByNmae(color);
+        SetMyColor(mycolor);
+    }
+
+    [PunRPC]
+    public void SetDtat(string _forwardSpeed, string _rotateSpeed)
+    {
+        //Debug.Log("SetColor called with color=" + color);
+        Debug.Log("_forwardSpeed=" + _forwardSpeed + "   _rotateSpeed=" + _rotateSpeed);
+        forwardSpeed = float.Parse(_forwardSpeed);
+        rotateSpeed = float.Parse(_rotateSpeed);
     }
 
 
@@ -588,7 +664,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
             GameObject.Destroy(rightWing.ps.gameObject);
         }
 
-        if (pv.IsMine)
+        if (IsControllable())
             PhotonNetwork.Destroy(this.gameObject);
         else
             GameObject.Destroy(this.gameObject);
@@ -615,14 +691,14 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
     //    }
     //}
 
-    public void SetPlayerCustomPropertise()
-    {
-        int KillScore = (int)PhotonNetwork.LocalPlayer.CustomProperties["Color"];
-        mycolor = Color.blue;
-        Hashtable hash = new Hashtable();
-        hash.Add("Color", mycolor);
-        PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
-    }
+    //public void SetPlayerCustomPropertise()
+    //{
+    //    int KillScore = (int)PhotonNetwork.LocalPlayer.CustomProperties["Color"];
+    //    mycolor = Color.blue;
+    //    Hashtable hash = new Hashtable();
+    //    hash.Add("Color", mycolor);
+    //    PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+    //}
 
     public Color GetMyColor()
     {
@@ -630,20 +706,20 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
     }
     public void SetMyColor(Color cl)
     {
-        Debug.Log("Set color to " + playermanager.Instance.planeColorClass.GetColorname(cl));
+        //Debug.Log("Set color to " + playermanager.Instance.planeColorClass.GetColorname(cl));
         mycolor = cl;
         transform.GetChild(0).GetComponent<SpriteRenderer>().color = mycolor;
     }
 
-    public void SendMyColor()
-    {
+    //public void SendMyColor()
+    //{
 
-        Debug.Log("sending color");
-        Hashtable hash = new Hashtable();
-        hash.Add("Color", playermanager.Instance.planeColorClass.GetColorname(mycolor));
-        PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
-        PlayerBindingObjectClass.update();
-    }
+    //    //Debug.Log("sending color");
+    //    Hashtable hash = new Hashtable();
+    //    hash.Add("Color", playermanager.Instance.planeColorClass.GetColorname(mycolor));
+    //    PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
+    //    PlayerBindingObjectClass.update();
+    //}
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         //Debug.Log("OnPhotonInstantiate");

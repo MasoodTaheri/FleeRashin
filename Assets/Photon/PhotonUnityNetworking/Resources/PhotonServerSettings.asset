@@ -39,5 +39,7 @@ MonoBehaviour:
   - startAllWingParticle
   - RPC_Plane_Bullet_hit
   - ShootRocket_Rpc
+  - SetColor
+  - SetDtat
   DisableAutoOpenWizard: 1
   ShowSettings: 1

@@ -18,6 +18,7 @@ public class gun : MonoBehaviour //MonoBehaviourPun, IPunObservable
     float doubleClickDeltaTime;
     private bool shoot;
     //private int gunId = 0;
+    public DefaultPlayerPlane plane;
     public int damage;
 
     // Use this for initialization
@@ -36,14 +37,29 @@ public class gun : MonoBehaviour //MonoBehaviourPun, IPunObservable
     // Update is called once per frame
     void Update()
     {
+        //Debug.Log("Shoot " + shoot + "IsControllable=" + plane.IsControllable()
+        //    + "  by " + this.gameObject.name);
 
-        if (!pv.IsMine && PhotonNetwork.IsConnected)
+        if (!plane.IsControllable())
             return;
 
-        //if (Input.GetKey(KeyCode.Q))
-        if (shoot || /*DetectDoubleClick() || */Input.GetKey(KeyCode.LeftControl))
+
+        //Debug.Log("is me " + !(plane is EnemyPlane) + "  by " + this.gameObject.name);
+
+        if (!PhotonNetwork.IsConnected)
+            return;
+
+
+        if (plane.IsInturn())
         {
-            //Debug.Log("1111");
+            //Debug.Log("Impossible to shoot for" + plane.gameObject.name);
+            return;
+        }
+
+        //if (Input.GetKey(KeyCode.Q))
+        if (shoot || /*DetectDoubleClick() || */
+            (!(plane is EnemyPlane) && Input.GetKey(KeyCode.LeftControl)))
+        {
             t0 += Time.deltaTime;
             if (t0 > Shootdelay)
             {
@@ -75,8 +91,17 @@ public class gun : MonoBehaviour //MonoBehaviourPun, IPunObservable
     }
     public void Shoot(bool enable)
     {
+        //Debug.Log("Shoot set to " + enable + "  by " + this.gameObject.name);
+
         shoot = enable;
-        firebullet();
+        //firebullet();
+
+        //if (plane.IsInturn())
+        //{
+        //    Debug.Log("Impossible to shoot for" + plane.gameObject.name);
+        //    shoot = false;
+        //}
+
     }
 
 

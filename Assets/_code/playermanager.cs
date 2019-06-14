@@ -37,13 +37,19 @@ public class PlaneColorClass
     {
         return playercolors[Random.Range(0, playercolors.Count)];
     }
+
+    public string GetRandomColorName()
+    {
+        Color cl = GetRandomColor();
+        return GetColorname(cl);
+    }
     public string GetColorname(Color cl)
     {
         for (int i = 0; i < playercolors.Count; i++)
             if (playercolors[i] == cl)
                 return playercolorsName[i];
 
-        Debug.LogError("Cannot find colo with value"+cl.ToString());
+        Debug.LogError("Cannot find colo with value" + cl.ToString());
         return "";
     }
 
@@ -67,6 +73,7 @@ public class playermanager : MonoBehaviour, IOnEventCallback
 {
     public static DefaultPlayerPlane PlanePlayer;
     public GameObject playerPrefab;
+    public GameObject Enemy;
     //public GameObject player;
     public GameObject MainMenu;
     public GameObject ingameMenu;
@@ -79,6 +86,7 @@ public class playermanager : MonoBehaviour, IOnEventCallback
     public GameObject puncoin;
     public static playermanager Instance;
     public PlaneColorClass planeColorClass;
+    public int AICount;
 
 
 
@@ -179,20 +187,14 @@ public class playermanager : MonoBehaviour, IOnEventCallback
 
         GetComponent<RocketManager>().allowRockets = true;
 
-
-
-        //PlanePlayer = new DefaultPlayerPlane(forwardSpeed, rotateSpeed, -1, null, playerPrefab);
-        //PlanePlayer = Instantiate(playerPrefab).GetComponent<DefaultPlayerPlane>();
-        //PlanePlayer = PhotonNetwork.Instantiate(playerPrefab.name,Vector3.zero,Quaternion.identity).GetComponent<DefaultPlayerPlane>();
-        Vector3 spawnpoint;
-        if (Generate_near)
-            spawnpoint = new Vector3(Random.Range(-3.0f, 3.0f), -6, Random.Range(-3.0f, 3.0f));
-        else
-            spawnpoint = new Vector3(Random.Range(-30.0f, 30.0f), -6, Random.Range(-30.0f, 30.0f));
+        Vector3 spawnpoint = FindSpawnPoint();
 
         PlanePlayer = PhotonNetwork.Instantiate(playerPrefab.name, spawnpoint, Quaternion.identity).GetComponent<DefaultPlayerPlane>();
         PlanePlayer.forwardSpeed = forwardSpeed;
         PlanePlayer.rotateSpeed = rotateSpeed;
+        string cl = planeColorClass.GetRandomColorName();
+        PlanePlayer.GetComponent<PhotonView>().RPC("SetColor", RpcTarget.AllBufferedViaServer, cl);
+        Debug.Log("PlanePlayer color set to" + cl);
 
 
         music.clip = InGameMusic[Random.Range(0, InGameMusic.Count)];
@@ -200,9 +202,41 @@ public class playermanager : MonoBehaviour, IOnEventCallback
         if (PlayerDataClass.Flare <= 2)
             PlayerDataClass.Flare = 3;
 
-        //player = Instantiate(playerPrefab, new Vector3(0, -6, 0), Quaternion.identity) as GameObject;
         outofgame = false;
         uiController.Instanse.resetUIelements();
+
+        if (PhotonNetwork.IsMasterClient)
+            for (int i = 0; i < AICount; i++)
+            {
+                GeneratePlane(Enemy, FindSpawnPoint(), i);
+            }
+    }
+
+    private Vector3 FindSpawnPoint()
+    {
+        Vector3 spawnpoint;
+        if (Generate_near)
+            spawnpoint = new Vector3(Random.Range(-3.0f, 3.0f), -6, Random.Range(-3.0f, 3.0f));
+        else
+            spawnpoint = new Vector3(Random.Range(-30.0f, 30.0f), -6, Random.Range(-30.0f, 30.0f));
+
+        return spawnpoint;
+    }
+
+    public void GeneratePlane(GameObject planename, Vector3 spawnpoint, int id)
+    {
+
+        EnemyPlane enemy1 = PhotonNetwork.InstantiateSceneObject(planename.name, spawnpoint, Quaternion.identity).GetComponent<EnemyPlane>();
+        //enemy1.forwardSpeed = forwardSpeed;// * 0.9f;
+        //enemy1.rotateSpeed = rotateSpeed;// * 0.5f; ;
+        //enemy1.AIid = id;
+        enemy1.GetComponent<PhotonView>().RPC("SetDtat", RpcTarget.AllBufferedViaServer, forwardSpeed.ToString()
+            , rotateSpeed.ToString());
+
+
+        string cl = planeColorClass.GetRandomColorName();
+        enemy1.GetComponent<PhotonView>().RPC("SetColor", RpcTarget.AllBufferedViaServer, cl);
+        Debug.Log("enemy color set to" + cl);
     }
 
     IEnumerator result_show()

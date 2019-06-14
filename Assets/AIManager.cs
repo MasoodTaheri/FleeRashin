@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class AIManager : MonoBehaviour
 {
+    /*
     public GameObject enemyPrefab;
     public GameObject FighterPrefab;
     public GameObject iconPrefab;
@@ -128,4 +129,5 @@ public class AIManager : MonoBehaviour
     //    }
 
     //}
+    */
 }

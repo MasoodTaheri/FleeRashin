@@ -228,9 +228,14 @@ public class luncher : MonoBehaviourPunCallbacks
         Debug.Log("OnJoinedRoom CurrentRoom.Name:" + PhotonNetwork.CurrentRoom.Name);
         GetAllPlayersInRoom();
         //PhotonNetwork.Instantiate(playerPrefab.name, Vector3.zero, Quaternion.identity, 0);
+        //if (PhotonNetwork.IsMasterClient)
+        //    setRoomCustomPropertise();
+
         playermanager.Instance.startGameEvent();
         //GetAllPlayersInRoom();
     }
+
+
 
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -283,13 +288,15 @@ public class luncher : MonoBehaviourPunCallbacks
 
         //        //playersInRoom.Add(p.NickName);
         //    }
+    }
 
 
 
-
-
-
-
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        //base.OnMasterClientSwitched(newMasterClient);
+        Debug.Log("OnMasterClientSwitched");
+        Debug.Log("PhotonNetwork.IsMasterClient="+ PhotonNetwork.IsMasterClient);
     }
 
     //public void Fill_PlayerBindingObjectClass()
@@ -344,7 +351,7 @@ public class luncher : MonoBehaviourPunCallbacks
             else
                 Debug.LogError("cound not find plNE TO SET COLOR");
 
-            
+
 
         }
     }
@@ -352,9 +359,24 @@ public class luncher : MonoBehaviourPunCallbacks
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
     {
         //base.OnRoomPropertiesUpdate(propertiesThatChanged);
-
+        Debug.Log("OnRoomPropertiesUpdate");
 
     }
 
+    //private void setRoomCustomPropertise()
+    //{
+    //    Hashtable hash = new Hashtable();
+    //    for (int i = 0; i < 10; i++)
+    //    //int i = 0;
+    //    {
+    //        string str = "AI" + i.ToString() + "Color";
+    //        //Debug.Log("set sample color = " + playermanager.Instance.planeColorClass.GetRandomColor().ToString()
+    //        //    + "for " + str);
+    //        hash.Add(str, playermanager.Instance.planeColorClass.GetColorname(
+    //            playermanager.Instance.planeColorClass.GetRandomColor()));
+    //    }
 
+
+    //    PhotonNetwork.CurrentRoom.SetCustomProperties(hash);
+    //}
 }
