@@ -605,7 +605,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
     public void SetDtat(string _forwardSpeed, string _rotateSpeed)
     {
         //Debug.Log("SetColor called with color=" + color);
-        Debug.Log("_forwardSpeed=" + _forwardSpeed + "   _rotateSpeed=" + _rotateSpeed);
+        //Debug.Log("_forwardSpeed=" + _forwardSpeed + "   _rotateSpeed=" + _rotateSpeed);
         forwardSpeed = float.Parse(_forwardSpeed);
         rotateSpeed = float.Parse(_rotateSpeed);
     }

@@ -399,7 +399,7 @@ public class EnemyPlane : DefaultPlayerPlane
         base.Update();
         if (!IsControllable() && PhotonNetwork.IsConnected)
             return;
-        Debug.Log("updateAI");
+        //Debug.Log("updateAI");
         Targets.updateInfo();
         if (_target == null || Input.GetKeyUp(KeyCode.Q))
         {

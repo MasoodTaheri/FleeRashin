@@ -152,9 +152,15 @@ public class playermanager : MonoBehaviour, IOnEventCallback
                 PlanePlayer.Update();
         }
 
+        if (Input.GetKeyUp(KeyCode.Q))
+            EndGame();
+
     }
 
-
+    public void EndGame()
+    {
+        PlanePlayer.destroy();
+    }
 
     public void startGame()
     {
@@ -164,7 +170,15 @@ public class playermanager : MonoBehaviour, IOnEventCallback
         //PhotonNetwork.CurrentRoom.IsOpen = false;
         //PhotonNetwork.CurrentRoom.IsVisible = false;
         //startGameEvent();
-        PhotonNetwork.JoinRandomRoom();
+        //PhotonNetwork.JoinRandomRoom();
+        GetComponent<luncher>().Connect();
+    }
+
+    public void startGameOffline()
+    {
+        //PhotonNetwork.Disconnect();
+        PhotonNetwork.OfflineMode = true;
+        //PhotonNetwork.JoinRandomRoom();
     }
 
     public void startGameEvent()
@@ -194,7 +208,7 @@ public class playermanager : MonoBehaviour, IOnEventCallback
         PlanePlayer.rotateSpeed = rotateSpeed;
         string cl = planeColorClass.GetRandomColorName();
         PlanePlayer.GetComponent<PhotonView>().RPC("SetColor", RpcTarget.AllBufferedViaServer, cl);
-        Debug.Log("PlanePlayer color set to" + cl);
+        //Debug.Log("PlanePlayer color set to" + cl);
 
 
         music.clip = InGameMusic[Random.Range(0, InGameMusic.Count)];
@@ -236,7 +250,7 @@ public class playermanager : MonoBehaviour, IOnEventCallback
 
         string cl = planeColorClass.GetRandomColorName();
         enemy1.GetComponent<PhotonView>().RPC("SetColor", RpcTarget.AllBufferedViaServer, cl);
-        Debug.Log("enemy color set to" + cl);
+        //Debug.Log("enemy color set to" + cl);
     }
 
     IEnumerator result_show()
@@ -304,7 +318,8 @@ public class playermanager : MonoBehaviour, IOnEventCallback
             PlayerPrefs.SetInt("LoosecountForAd", PlayerPrefs.GetInt("LoosecountForAd", 0) + 1);
         }
 
-        PhotonNetwork.LeaveRoom();
+        //PhotonNetwork.LeaveRoom();
+        PhotonNetwork.Disconnect();
         //Debug.Log("LoosecountForAd=" + PlayerPrefs.GetInt("LoosecountForAd", 0));
     }
 

@@ -113,19 +113,14 @@ public class luncher : MonoBehaviourPunCallbacks
     // Use this for initialization
     void Start()
     {
-
+        //PhotonNetwork.OfflineMode = true;
 
         //Myname = "masood" + Random.Range(0, 100).ToString();
         //PhotonNetwork.NickName = Myname;
-        StartButton.SetActive(false);
-        loading.gameObject.SetActive(true);
-        loading.gameObject.transform.GetChild(0).GetComponent<Text>().text = "Connecting to server ...";
-
         Myname = "Player" + Random.Range(0, 100).ToString();
-        PhotonNetwork.LocalPlayer.NickName = Myname;
-        PhotonNetwork.NickName = Myname;
-
-        Connect();
+        loading.gameObject.SetActive(false);
+        StartButton.SetActive(true);
+        //Connect();
 
     }
 
@@ -134,7 +129,7 @@ public class luncher : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-        loading.fillAmount += Time.deltaTime * loadingFillDirection;
+                loading.fillAmount += Time.deltaTime * loadingFillDirection;
         if ((loading.fillAmount >= 1) || (loading.fillAmount <= 0))
         {
             loadingFillDirection *= -1;
@@ -155,6 +150,14 @@ public class luncher : MonoBehaviourPunCallbacks
 
     public void Connect()
     {
+        StartButton.SetActive(false);
+        loading.gameObject.SetActive(true);
+        loading.gameObject.transform.GetChild(0).GetComponent<Text>().text = "Connecting to server ...";
+
+
+        PhotonNetwork.LocalPlayer.NickName = Myname;
+        PhotonNetwork.NickName = Myname;
+
         if (PhotonNetwork.IsConnected)
         {
             Debug.Log("Joining Room...");
@@ -179,7 +182,7 @@ public class luncher : MonoBehaviourPunCallbacks
         //Hashtable props = new Hashtable() { { luncher.PLAYER_READY, true } };
         //PhotonNetwork.LocalPlayer.SetCustomProperties(props);
 
-        //PhotonNetwork.JoinRandomRoom();
+        PhotonNetwork.JoinRandomRoom();
         InvokeRepeating("getping", 1, 1);
         //Debug.Log("NickName=" + PhotonNetwork.NickName);
         //Debug.Log("LocalPlayer.NickName=" + PhotonNetwork.LocalPlayer.NickName);
@@ -194,14 +197,23 @@ public class luncher : MonoBehaviourPunCallbacks
 
     void getping()
     {
+        
         ping = PhotonNetwork.GetPing();
         pingMeter_text.text = ping.ToString();
+        if (PhotonNetwork.OfflineMode)
+        {
+            pingMeter_text.text = "0";
+            ping = 10;
+        }
         if (ping > 200) pingMeter.color = Color.red;
-        if (ping < 150) pingMeter.color = Color.gray; ;
+        if (ping < 150) pingMeter.color = Color.gray; 
         if (ping < 100) pingMeter.color = Color.green;
         if (ping == 0) pingMeter.color = Color.black;
 
-        SerializationRate = PhotonNetwork.SerializationRate;
+        //SerializationRate = PhotonNetwork.SerializationRate;
+
+
+
     }
 
     public override void OnDisconnected(DisconnectCause cause)
