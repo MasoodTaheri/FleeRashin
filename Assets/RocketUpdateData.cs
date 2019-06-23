@@ -18,12 +18,13 @@ public class RocketUpdateData : networkRigidbody2
     //}
     new void FixedUpdate()
     {
-        if (!pv.IsMine)
-            if (IsNeedForceSync())
-            {
-                ForceSync();
-                return;
-            }
+        //return;
+        //if (!pv.IsMine)
+        //    if (IsNeedForceSync())
+        //    {
+        //        ForceSync();
+        //        return;
+        //    }
         base.FixedUpdate();
     }
 

@@ -5,34 +5,6 @@ using UnityEngine;
 public class testcode : MonoBehaviour
 {
 
-    public class classA
-    {
-        protected virtual int Add(int a, int b)
-        {
-            return a + b;
-        }
-
-        public int addtest(int a, int b)
-        {
-            return Add(a, b);
-        }
-    }
-
-    public class classB : classA
-    {
-        protected override int Add(int a, int b)
-        {
-            return (a + b) * 2;
-        }
-    }
-
-
-    [ContextMenu("Test")]
-    public void Test()
-    {
-        classB B = new classB();
-        Debug.Log(B.addtest(2, 3));
-    }
 
     // Use this for initialization
     void Start()
@@ -44,5 +16,14 @@ public class testcode : MonoBehaviour
     void Update()
     {
 
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        Debug.LogFormat("OnCollisionEnter BulletCode {0} hited by {1}", other.gameObject.name, this.gameObject.name);
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.LogFormat("OnTriggerEnter BulletCode {0} hited by {1}", other.gameObject.name, this.gameObject.name);
     }
 }

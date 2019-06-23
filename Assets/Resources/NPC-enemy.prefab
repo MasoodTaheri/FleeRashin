@@ -929,7 +929,7 @@ MonoBehaviour:
   bulletLifeTime: 3
   bulletSpeed: 10
   aus: {fileID: 82852329104162122}
-  Shootdelay: 0.2
+  Shootdelay: 1
   plane: {fileID: 114762830376533838}
   damage: 1
 --- !u!114 &114559115815469682
@@ -1034,6 +1034,7 @@ MonoBehaviour:
       Attackable: 0
     targetlist: []
     plane: {fileID: 1419502116837566}
+  ShootDistance: 5
 --- !u!114 &114856835065474984
 MonoBehaviour:
   m_ObjectHideFlags: 1

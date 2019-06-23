@@ -50,11 +50,11 @@ public class gun : MonoBehaviour //MonoBehaviourPun, IPunObservable
             return;
 
 
-        if (plane.IsInturn())
-        {
-            //Debug.Log("Impossible to shoot for" + plane.gameObject.name);
-            return;
-        }
+        //if (plane.IsInturn())
+        //{
+        //    //Debug.Log("Impossible to shoot for" + plane.gameObject.name);
+        //    return;
+        //}
 
         //if (Input.GetKey(KeyCode.Q))
         if (shoot || /*DetectDoubleClick() || */

@@ -94,6 +94,7 @@ public class Rocket : MonoBehaviour, IShoot
 
     public void Collision(Collision collision, GameObject me)
     {
+        Debug.Log("Collision Rocket is hit by " + collision.gameObject.name);
         if (!PhotonNetwork.IsMasterClient)
             return;
         //destroiedbyCollision = true;
@@ -126,11 +127,14 @@ public class Rocket : MonoBehaviour, IShoot
 
     public void OnTriggerEnter(Collider collision)
     {
+        Debug.Log("Rocket is hit by " + collision.gameObject.name);
         //destroiedbyCollision = true;
         //GameObject.Destroy(GameObject.Instantiate(HitParticle, transform.position, Quaternion.identity) as GameObject, 5);
         //GameObject.Destroy(this.gameObject);
         if (!PhotonNetwork.IsMasterClient)
             return;
+        RocketManager.instance.RocketIsExpluded();
+        Explude();
         target = null;
     }
 

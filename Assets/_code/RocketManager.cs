@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using Photon.Pun;
+using Photon.Realtime;
 
 
 public class UIPOSClass
@@ -53,30 +54,35 @@ public class UIPOSClass
     }
 }
 
-public class RocketManager : MonoBehaviour
+public class RocketManager : MonoBehaviourPunCallbacks
 {
     public bool allowRockets;
     public static RocketManager instance;
     GameObject player;
     public GameObject RocketPrefab;
-    public Rocket[] rocketlist = new Rocket[3];
+    //public Rocket[] rocketlist = new Rocket[5];
     public GameObject RocketRoot;
     //public List<ExplusionClass> explusionList;
     public int RocketCount;
     //public float rotateSpeed;
     //public float forwardSpeed;
     //public float lifetime;
+    public int RocketCountInScene;
+
 
     // Use this for initialization
     void Start()
     {
         instance = this;
+
     }
 
     // Update is called once per frame
     void Update()
     {
         if (!PhotonNetwork.IsMasterClient) return;
+        //if (RocketCountInScene == -1)
+        //RocketCountInScene = GameObject.FindGameObjectsWithTag("Rocket").Length;
 
         if (player == null)
         {
@@ -85,20 +91,40 @@ public class RocketManager : MonoBehaviour
         }
 
         if (!allowRockets) return;
-        for (int i = 0; i < RocketCount; i++)
-        {
-            if (rocketlist[i] != null)
-            {
-                if (rocketlist[i].readytodestroy)
-                    rocketlist[i] = null;
-                //else
-                //    rocketlist[i].Update();
-            }
-        }
+        //for (int i = 0; i < RocketCount; i++)
+        //{
+        //    if (rocketlist[i] != null)
+        //    {
+        //        if (rocketlist[i].readytodestroy)
+        //            rocketlist[i] = null;
+        //        //else
+        //        //    rocketlist[i].Update();
+        //    }
+        //}
 
 
         CheckAndGenerateRockets();
 
+    }
+
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        //base.OnMasterClientSwitched(newMasterClient);
+        Debug.Log("OnMasterClientSwitched on rocketmanager");
+        InitManager();
+    }
+
+    public void InitManager()
+    {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+        GameObject[] curockets = GameObject.FindGameObjectsWithTag("Rocket");
+        RocketCountInScene = curockets.Length;
+    }
+
+    public void RocketIsExpluded()
+    {
+        RocketCountInScene--;
     }
 
     //public void expludeAt(int explusionId, Vector3 pos)
@@ -109,10 +135,19 @@ public class RocketManager : MonoBehaviour
 
     private void CheckAndGenerateRockets()
     {
+        if (RocketCountInScene < RocketCount)
+        {
+            PhotonNetwork.InstantiateSceneObject(RocketPrefab.name,
+                    new Vector3(0, -6, 0), Quaternion.identity).GetComponent<Rocket>();
+            RocketCountInScene++;
+        }
+
+        /*
         for (int i = 0; i < RocketCount; i++)
         {
             if (rocketlist[i] == null)
             {
+                //Debug.Log("Rocket count=" + );
                 //rocketlist[i] = Instantiate(RocketPrefab, spawnpos(), Quaternion.identity) as GameObject;
                 //float rotateSpeed = 1;//
                 //float forwardSpeed = 3.65f;//
@@ -129,9 +164,17 @@ public class RocketManager : MonoBehaviour
                 //rocketlist[i].gameObject.transform.SetParent(RocketRoot.transform);
             }
         }
+        */
     }
 
 
-
-
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        RocketCountInScene = 0;
+    }
+    public override void OnJoinedRoom()
+    {
+        RocketCountInScene = 0;
+        InitManager();
+    }
 }

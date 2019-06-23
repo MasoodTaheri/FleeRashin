@@ -246,6 +246,7 @@ public class EnemyPlane : DefaultPlayerPlane
 {
     public GameObject _target;
     public TargetDataClass Targets;
+    public float ShootDistance;
     //public int AIid;
     //public AIStateEnum State;
     //public bool coinCollector;
@@ -383,7 +384,11 @@ public class EnemyPlane : DefaultPlayerPlane
 
         if (IsinAttackState)
         {
-            planeGun.Shoot(true);
+            //planeGun.Shoot(true);
+            //
+            if (_target != null)
+                planeGun.Shoot((Vector3.Distance(transform.position,
+                    _target.transform.position) < ShootDistance));
         }
         else
         {
@@ -417,7 +422,7 @@ public class EnemyPlane : DefaultPlayerPlane
             TimeToChangetarget = 10 + UnityEngine.Random.Range(-4.0f, 4.0f);
             t0 = 0;
             //if (!isNearToTarget())
-                TargetDetection();
+            TargetDetection();
         }
     }
 

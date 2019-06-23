@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
+using Photon.Realtime;
+using ExitGames.Client.Photon;
 
-public class AIManager : MonoBehaviour
+public class AIManager : MonoBehaviourPunCallbacks
 {
     /*
     public GameObject enemyPrefab;
@@ -130,4 +133,102 @@ public class AIManager : MonoBehaviour
 
     //}
     */
+    public GameObject Enemy;
+    public float forwardSpeed;
+    public float rotateSpeed;
+    public PlaneColorClass planeColorClass;
+    public bool Generate_near;
+    public int AICount;
+    public int AIInScene;
+    public static AIManager instance;
+    public bool AllowGenerateAI;
+
+    void Start()
+    {
+        //Instance = this;
+        instance = this;
+        planeColorClass = new PlaneColorClass();
+    }
+
+    public static void StartGeneratingAI()
+    {
+        instance.AllowGenerateAI = true;
+    }
+
+    void Update()
+    {
+        if (!AllowGenerateAI)
+            return;
+        if (!PhotonNetwork.IsMasterClient) return;
+        //if (RocketCountInScene == -1)
+        //RocketCountInScene = GameObject.FindGameObjectsWithTag("Rocket").Length;
+
+        if (playermanager.PlanePlayer == null)
+            return;
+
+        if(AIInScene<AICount)
+            instance.GeneratePlane(instance.Enemy, instance.FindSpawnPoint());
+
+    }
+    public void InitManager()
+    {
+        if (!PhotonNetwork.IsMasterClient)
+            return;
+        GameObject[] cuAIs = GameObject.FindGameObjectsWithTag("Playerbody");
+        AIInScene = cuAIs.Length;
+    }
+
+
+
+    public void GeneratePlane(GameObject planename, Vector3 spawnpoint)
+    {
+
+        EnemyPlane enemy1 = PhotonNetwork.InstantiateSceneObject(planename.name, spawnpoint, Quaternion.identity).GetComponent<EnemyPlane>();
+        //enemy1.forwardSpeed = forwardSpeed;// * 0.9f;
+        //enemy1.rotateSpeed = rotateSpeed;// * 0.5f; ;
+        //enemy1.AIid = id;
+        enemy1.GetComponent<PhotonView>().RPC("SetDtat", RpcTarget.AllBufferedViaServer, forwardSpeed.ToString()
+            , rotateSpeed.ToString());
+
+
+        string cl = planeColorClass.GetRandomColorName();
+        enemy1.GetComponent<PhotonView>().RPC("SetColor", RpcTarget.AllBufferedViaServer, cl);
+        //Debug.Log("enemy color set to" + cl);
+        AIInScene++;
+    }
+
+    private Vector3 FindSpawnPoint()
+    {
+        Vector3 spawnpoint;
+        if (Generate_near)
+            spawnpoint = new Vector3(Random.Range(-3.0f, 3.0f), -6, Random.Range(-3.0f, 3.0f));
+        else
+            spawnpoint = new Vector3(Random.Range(-30.0f, 30.0f), -6, Random.Range(-30.0f, 30.0f));
+
+        return spawnpoint;
+    }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        AllowGenerateAI =false;
+        AIInScene = 0;
+    }
+    public override void OnJoinedRoom()
+    {
+        AllowGenerateAI = false;
+        AIInScene = 0;
+        InitManager();
+    }
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        //base.OnMasterClientSwitched(newMasterClient);
+        Debug.Log("OnMasterClientSwitched on rocketmanager");
+        AllowGenerateAI = false;
+        InitManager();
+    }
+
+    public void AIExpluded()
+    {
+        AIInScene--;
+    }
 }

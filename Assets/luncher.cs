@@ -104,6 +104,7 @@ public class luncher : MonoBehaviourPunCallbacks
     public int SerializationRate;
     public GameObject StartButton;
     public Image loading;
+    public bool IsMasterClient;
     //public GameObject player;
     private void Awake()
     {
@@ -129,7 +130,7 @@ public class luncher : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-                loading.fillAmount += Time.deltaTime * loadingFillDirection;
+        loading.fillAmount += Time.deltaTime * loadingFillDirection;
         if ((loading.fillAmount >= 1) || (loading.fillAmount <= 0))
         {
             loadingFillDirection *= -1;
@@ -197,7 +198,7 @@ public class luncher : MonoBehaviourPunCallbacks
 
     void getping()
     {
-        
+
         ping = PhotonNetwork.GetPing();
         pingMeter_text.text = ping.ToString();
         if (PhotonNetwork.OfflineMode)
@@ -206,7 +207,7 @@ public class luncher : MonoBehaviourPunCallbacks
             ping = 10;
         }
         if (ping > 200) pingMeter.color = Color.red;
-        if (ping < 150) pingMeter.color = Color.gray; 
+        if (ping < 150) pingMeter.color = Color.gray;
         if (ping < 100) pingMeter.color = Color.green;
         if (ping == 0) pingMeter.color = Color.black;
 
@@ -244,6 +245,7 @@ public class luncher : MonoBehaviourPunCallbacks
         //    setRoomCustomPropertise();
 
         playermanager.Instance.startGameEvent();
+        IsMasterClient = PhotonNetwork.IsMasterClient;
         //GetAllPlayersInRoom();
     }
 
@@ -254,6 +256,7 @@ public class luncher : MonoBehaviourPunCallbacks
     {
         Debug.Log("OnPlayerEnteredRoom " + newPlayer.NickName);
         GetAllPlayersInRoom();
+        IsMasterClient = PhotonNetwork.IsMasterClient;
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -308,7 +311,8 @@ public class luncher : MonoBehaviourPunCallbacks
     {
         //base.OnMasterClientSwitched(newMasterClient);
         Debug.Log("OnMasterClientSwitched");
-        Debug.Log("PhotonNetwork.IsMasterClient="+ PhotonNetwork.IsMasterClient);
+        Debug.Log("PhotonNetwork.IsMasterClient=" + PhotonNetwork.IsMasterClient);
+        IsMasterClient = PhotonNetwork.IsMasterClient;
     }
 
     //public void Fill_PlayerBindingObjectClass()

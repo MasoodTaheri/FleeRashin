@@ -643,12 +643,12 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
 
     public void destroy()
     {
-
+        if (this is EnemyPlane) AIManager.instance.AIExpluded();
         readytodestroy = true;
         //Debug.Log("bodey destroy" + gameObject.name);
         //if (flareObj!=null)
         //GameObject.Destroy(flareObj);
-
+        GameObject.Destroy(Indicator.gameObject);
         //Debug.Log("WingOnDestroy");
         if (leftWing.ps != null)
         {
@@ -669,8 +669,17 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
         else
             GameObject.Destroy(this.gameObject);
 
-        GameObject.Destroy(Indicator.gameObject);
 
+
+    }
+
+    void OnDestroy()
+    {
+        if (Indicator != null)
+        {
+            GameObject.Destroy(Indicator.gameObject);
+            //Debug.Log("Indicator destroyed @ ondestroy");
+        }
     }
 
     //public void WingOnDestroy()

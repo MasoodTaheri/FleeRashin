@@ -73,7 +73,7 @@ public class playermanager : MonoBehaviour, IOnEventCallback
 {
     public static DefaultPlayerPlane PlanePlayer;
     public GameObject playerPrefab;
-    public GameObject Enemy;
+    //public GameObject Enemy;
     //public GameObject player;
     public GameObject MainMenu;
     public GameObject ingameMenu;
@@ -86,7 +86,7 @@ public class playermanager : MonoBehaviour, IOnEventCallback
     public GameObject puncoin;
     public static playermanager Instance;
     public PlaneColorClass planeColorClass;
-    public int AICount;
+
 
 
 
@@ -219,11 +219,12 @@ public class playermanager : MonoBehaviour, IOnEventCallback
         outofgame = false;
         uiController.Instanse.resetUIelements();
 
-        if (PhotonNetwork.IsMasterClient)
-            for (int i = 0; i < AICount; i++)
-            {
-                GeneratePlane(Enemy, FindSpawnPoint(), i);
-            }
+        //if (PhotonNetwork.IsMasterClient)
+        //    for (int i = 0; i < AICount; i++)
+        //    {
+        //        GeneratePlane(Enemy, FindSpawnPoint(), i);
+        //    }
+        AIManager.StartGeneratingAI();
     }
 
     private Vector3 FindSpawnPoint()
@@ -237,21 +238,21 @@ public class playermanager : MonoBehaviour, IOnEventCallback
         return spawnpoint;
     }
 
-    public void GeneratePlane(GameObject planename, Vector3 spawnpoint, int id)
-    {
+    //public void GeneratePlane(GameObject planename, Vector3 spawnpoint, int id)
+    //{
 
-        EnemyPlane enemy1 = PhotonNetwork.InstantiateSceneObject(planename.name, spawnpoint, Quaternion.identity).GetComponent<EnemyPlane>();
-        //enemy1.forwardSpeed = forwardSpeed;// * 0.9f;
-        //enemy1.rotateSpeed = rotateSpeed;// * 0.5f; ;
-        //enemy1.AIid = id;
-        enemy1.GetComponent<PhotonView>().RPC("SetDtat", RpcTarget.AllBufferedViaServer, forwardSpeed.ToString()
-            , rotateSpeed.ToString());
+    //    EnemyPlane enemy1 = PhotonNetwork.InstantiateSceneObject(planename.name, spawnpoint, Quaternion.identity).GetComponent<EnemyPlane>();
+    //    //enemy1.forwardSpeed = forwardSpeed;// * 0.9f;
+    //    //enemy1.rotateSpeed = rotateSpeed;// * 0.5f; ;
+    //    //enemy1.AIid = id;
+    //    enemy1.GetComponent<PhotonView>().RPC("SetDtat", RpcTarget.AllBufferedViaServer, forwardSpeed.ToString()
+    //        , rotateSpeed.ToString());
 
 
-        string cl = planeColorClass.GetRandomColorName();
-        enemy1.GetComponent<PhotonView>().RPC("SetColor", RpcTarget.AllBufferedViaServer, cl);
-        //Debug.Log("enemy color set to" + cl);
-    }
+    //    string cl = planeColorClass.GetRandomColorName();
+    //    enemy1.GetComponent<PhotonView>().RPC("SetColor", RpcTarget.AllBufferedViaServer, cl);
+    //    //Debug.Log("enemy color set to" + cl);
+    //}
 
     IEnumerator result_show()
     {
