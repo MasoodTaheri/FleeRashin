@@ -210,6 +210,7 @@ public class luncher : MonoBehaviourPunCallbacks
         if (ping < 150) pingMeter.color = Color.gray;
         if (ping < 100) pingMeter.color = Color.green;
         if (ping == 0) pingMeter.color = Color.black;
+        if (ping >500) pingMeter.color = Color.black;
 
         //SerializationRate = PhotonNetwork.SerializationRate;
 

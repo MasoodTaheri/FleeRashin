@@ -19,6 +19,7 @@ public class networkRigidbody2 : MonoBehaviourPun, IPunObservable
     public Vector2 ErrorInRot;
     private DefaultPlayerPlane playercode;
     public bool uselerp;
+    public float lag;
 
     //bool initOnce = false;
     // Use this for initialization
@@ -83,6 +84,9 @@ public class networkRigidbody2 : MonoBehaviourPun, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
+        lag = 0;
+        ErrorInPos = new Vector2();
+        ErrorInRot = new Vector2();
         if (stream.IsWriting)
         {
             pos = rigidbody.position;
@@ -118,7 +122,7 @@ public class networkRigidbody2 : MonoBehaviourPun, IPunObservable
             //float lag = Mathf.Abs((float)(PhotonNetwork.time - info.timestamp));
             //_networkPosition += (_rb.velocity * lag);
 
-            float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.timestamp));
+            lag = Mathf.Abs((float)(PhotonNetwork.Time - info.timestamp));
             pos += rigidbody.velocity * lag;
             if (playercode != null)
                 playercode.Health = (int)stream.ReceiveNext();

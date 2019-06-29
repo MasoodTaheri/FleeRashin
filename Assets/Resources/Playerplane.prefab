@@ -1000,6 +1000,7 @@ MonoBehaviour:
   ErrorInPos: {x: 0, y: 0}
   ErrorInRot: {x: 0, y: 0}
   uselerp: 1
+  lag: 0
 --- !u!114 &114775065588764218
 MonoBehaviour:
   m_ObjectHideFlags: 1

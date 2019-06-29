@@ -258,6 +258,7 @@ MonoBehaviour:
   ErrorInPos: {x: 0, y: 5}
   ErrorInRot: {x: 0, y: 5}
   uselerp: 1
+  lag: 0
 --- !u!114 &114576207982427920
 MonoBehaviour:
   m_ObjectHideFlags: 1

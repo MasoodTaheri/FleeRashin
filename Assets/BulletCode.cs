@@ -37,7 +37,7 @@ public class BulletCode : MonoBehaviour,IShoot
     }
     private void OnCollisionEnter(Collision other)
     {
-        Debug.LogFormat("OnCollisionEnter BulletCode {0} hited by {1}", other.gameObject.name, this.gameObject.name);
+        //Debug.LogFormat("OnCollisionEnter BulletCode {0} hited by {1}", other.gameObject.name, this.gameObject.name);
         ////Destroy(this.gameObject);
         ////Destroy(this.gameObject.transform.parent.gameObject);
         //Destroy(this.gameObject);
@@ -52,7 +52,7 @@ public class BulletCode : MonoBehaviour,IShoot
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.LogFormat("OnTriggerEnter BulletCode {0} hited by {1}", other.gameObject.name, this.gameObject.name);
+        //Debug.LogFormat("OnTriggerEnter BulletCode {0} hited by {1}", other.gameObject.name, this.gameObject.name);
 
         Destroy(this.gameObject);
     }
