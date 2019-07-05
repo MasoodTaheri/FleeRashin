@@ -20,6 +20,7 @@ public class DeltaTimeMeter : MonoBehaviour
     public GameObject RightBox;
     private networkRigidbody2[] codes;
     //public networkRigidbody2 Playercode;
+    public bool AllowWriteToFile;
 
     // Use this for initialization
     void Start()
@@ -77,7 +78,8 @@ public class DeltaTimeMeter : MonoBehaviour
 
         //if (PhotonNetwork.GetPing() > 300)
         //if (Input.GetKey(KeyCode.P))
-        WriteToFile();
+        if (AllowWriteToFile)
+            WriteToFile();
     }
 
 

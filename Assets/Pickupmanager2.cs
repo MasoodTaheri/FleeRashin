@@ -25,6 +25,8 @@ public class Pickupmanager2 : MonoBehaviour
 
     public void GenerateItem()
     {
+        if (this.enabled == false)
+            return;
         PickupAbleABSClass.range = range;
         for (int i = 0; i < CoinCount; i++)
         {

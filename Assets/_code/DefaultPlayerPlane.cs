@@ -62,7 +62,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
 
 
 
-    void Start()
+    public virtual void Start()
     {
         //obj = _obj;
         //obj = GameObject.Instantiate(prefab, new Vector3(0, -6, 0), Quaternion.identity) as GameObject;
@@ -479,7 +479,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
         //        }
     }
 
-    public void OnTriggerEnter(Collider collision)
+    public virtual void OnTriggerEnter(Collider collision)
     {
         //Debug.Log("plane hit by " + collision.gameObject.tag);
 

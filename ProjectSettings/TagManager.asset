@@ -11,6 +11,7 @@ TagManager:
   - Repair
   - Enemy
   - bullet
+  - LOg1
   layers:
   - Default
   - TransparentFX

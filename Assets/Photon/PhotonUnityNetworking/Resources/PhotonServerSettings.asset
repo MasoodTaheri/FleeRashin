@@ -41,5 +41,6 @@ MonoBehaviour:
   - ShootRocket_Rpc
   - SetColor
   - SetDtat
+  - StartGame_Rpc
   DisableAutoOpenWizard: 1
   ShowSettings: 1
