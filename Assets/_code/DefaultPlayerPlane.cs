@@ -51,19 +51,26 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
     public ColliderDataClass[] colliders;
     public enum PlanePartEnum { body, LeftWing, rightWing }
     public int Health;
+    int maxHealt;
     public SpriteRenderer Healthbar;
     public GameObject particlePrefab;
     public GameObject RocketPrefab;
     public GameObject planeExplusion;
+   
     [SerializeField]
     protected Color mycolor;
+
+    [SerializeField]
+    AirplaneBomb bombPrefab;
     //public bool playerControlable;
     //public bool ControlableOnThisDevice;
 
-
-
+    Animator planeAnimation;
+    
     public virtual void Start()
     {
+        planeAnimation = GetComponent<Animator>();
+        maxHealt = Health;
         //obj = _obj;
         //obj = GameObject.Instantiate(prefab, new Vector3(0, -6, 0), Quaternion.identity) as GameObject;
         rb = GetComponent<Rigidbody>();
@@ -175,12 +182,12 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
         rb.velocity = transform.forward * forwardSpeed;
         rb.angularVelocity = Vector3.zero;
     }
-
-
+    
     public float b2f(bool b)
     {
         return (b) ? 1 : 0;
     }
+
     public void StartShoot()
     {
         //Debug.Log("StartShoot " + "IsControllable=" + IsControllable());
@@ -191,6 +198,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
             planeGun = GetComponent<gun>();
         planeGun.Shoot(true);
     }
+
     public void EndShoot()
     {
         if (!IsControllable())
@@ -211,7 +219,8 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
     private void ShootRocket_Rpc()
     {
         GameObject Bullet1 = Instantiate(RocketPrefab) as GameObject;
-        Bullet1.transform.position = transform.position + transform.forward * 2;
+        Bullet1.GetComponent<PlayerPlaneRocket>().playerInstanceID = gameObject.GetInstanceID();
+        Bullet1.transform.position = transform.position + transform.forward * 1f;
         //- new Vector3(0, -2, 0);
         Bullet1.transform.rotation = transform.rotation;
 
@@ -269,21 +278,27 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
 
         return false;
     }
+
     protected virtual void rotate()
     {
         transform.Rotate(0, rotateSpeed * Time.deltaTime * (Rightweight - Leftweight), 0);
     }
 
+    public void ForceRotate(bool turnLeft, bool turnRight)
+    {/*
+        Rightweight = (turnRight) ? 2f : 0;
+        Leftweight = (turnLeft) ? 2f : 0;
+        transform.Rotate(0, rotateSpeed * Time.deltaTime * (Rightweight - Leftweight), 0);*/
+    }
+    
     public void setsterrtoleft(float PaddelValue)//touch controller
     {
         RotateLeftFactor = PaddelValue;
-
     }
 
     public void setsterrtoRight(float PaddelValue)//touch controller
     {
         RotateRightFactor = PaddelValue;
-
     }
 
     private void InputManager()
@@ -292,29 +307,45 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
             return;
 
         //rotateFactor += new Vector2(1 - leftWing.Health, 1 - rightWing.Health);
-        if (rotateFactor.x > 0.5 && leftWing.Health < 0) rotateFactor.x += leftWing.Health;
-        if (rotateFactor.y > 0.5 && rightWing.Health < 0) rotateFactor.y += rightWing.Health;
+        
+        if (leftWing != null && rotateFactor.x > 0.5 && leftWing.Health < 0) rotateFactor.x += leftWing.Health;
+        if (rightWing != null && rotateFactor.y > 0.5 && rightWing.Health < 0) rotateFactor.y += rightWing.Health;
         //    rotateFactor += new Vector2(
         //(isLeft && (rotateFactor.x > 0.5f)) ? minvalue : 0,
         //  (isRight && (rotateFactor.y > 0.5f)) ? minvalue : 0);
 
-        Rightweight = (b2f(Input.GetKey(KeyCode.RightArrow)) + RotateRightFactor) * rotateFactor.y;
+        Rightweight =  (b2f(Input.GetKey(KeyCode.RightArrow)) + RotateRightFactor) * rotateFactor.y;
         Leftweight = (b2f(Input.GetKey(KeyCode.LeftArrow)) + RotateLeftFactor) * rotateFactor.x;
     }
 
     public void updateHealthbar()
     {
-        Healthbar.transform.localScale = new Vector3(Health / 100.0f, 1, 1);
+        Healthbar.transform.localScale = new Vector3((float)Health / maxHealt, 1, 1);
     }
 
     public virtual void Update()
     {
-
         UIPOSClass.UIposArrow(transform.position, Indicator);
         updateHealthbar();
 
         if (!IsControllable() && PhotonNetwork.IsConnected)
             return;
+
+        if (Input.GetKeyDown(KeyCode.Space))
+            FindObjectOfType<rocketShootcontroller>().OnPointerDown(null);
+        if (Input.GetKeyUp(KeyCode.Space))
+            FindObjectOfType<rocketShootcontroller>().OnPointerUp(null);
+
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+            forwardSpeed *= 3f;
+        if (Input.GetKeyUp(KeyCode.DownArrow))
+            forwardSpeed /= 3f;
+
+        if (planeAnimation != null)
+        {
+            planeAnimation.SetBool("TurnLeft", Leftweight > 0);
+            planeAnimation.SetBool("TurnRight", Rightweight > 0);
+        }
 
 
         //Debug.Log("Update");
@@ -324,8 +355,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
         //leftWing.Update();
         //rightWing.Update();
     }
-
-
+    
     public IEnumerator flareDropIE()
     {
         if (PlayerDataClass.Flare > 0)
@@ -346,8 +376,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
     //}
 
     //public void Collision(Collision collision, GameObject me)
-
-
+    
     public virtual void OnCollisionEnter(Collision collision)
     {
         if (!IsControllable() && PhotonNetwork.IsConnected)
@@ -562,6 +591,11 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
             pv.RPC("RPC_Plane_Bullet_hit", RpcTarget.All, shootable.GetDamage());
             //Debug.Log("WingCollision with" + collision.gameObject.tag + "   " + collision.gameObject.name);
         }
+
+        if (collision.gameObject.tag == "Laser")
+        {
+            pv.RPC("RPC_Plane_Bullet_hit", RpcTarget.All, collision.GetComponent<Laser>().GetDamage());
+        }
     }
 
     [PunRPC]
@@ -590,8 +624,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
             destroy();
         }
     }
-
-
+    
     //called by GeneratePlane in player manager  with RpcTarget.AllBufferedViaServer
     [PunRPC]
     public void SetColor(string color)
@@ -609,9 +642,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
         forwardSpeed = float.Parse(_forwardSpeed);
         rotateSpeed = float.Parse(_rotateSpeed);
     }
-
-
-
+    
     public void inchealth()
     {
         if (leftWing.ps != null)
@@ -669,7 +700,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
         else
             GameObject.Destroy(this.gameObject);
 
-
+        GameObject.Destroy(Indicator.gameObject);
 
     }
 
@@ -713,6 +744,7 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
     {
         return mycolor;
     }
+
     public void SetMyColor(Color cl)
     {
         //Debug.Log("Set color to " + playermanager.Instance.planeColorClass.GetColorname(cl));
@@ -733,6 +765,11 @@ public class DefaultPlayerPlane : MonoBehaviourPun, IPunInstantiateMagicCallback
     {
         //Debug.Log("OnPhotonInstantiate");
         PlayerBindingObjectClass.update();
+    }
+
+    public void DropBomb()
+    {
+        Instantiate(bombPrefab, transform.position - new Vector3(0,11f,0), transform.rotation);
     }
 }
 

@@ -25,10 +25,11 @@ public abstract class PickupAbleABSClass : MonoBehaviourPun, IPunObservable
             Objs = new List<PickupAbleABSClass>();
 
         Objs.Add(this);
-        Icon = Instantiate(IconPrefab) as GameObject;
+        /*Icon = Instantiate(IconPrefab) as GameObject;
         Icon.transform.SetParent(CanvasRoot.transform);
         Icon.GetComponent<RectTransform>().localScale = Vector3.one;
-        Iconimage = Icon.GetComponent<Image>();
+        Iconimage = Icon.GetComponent<Image>();*/
+        Iconimage = FindObjectOfType<UIManager>().InstantiateIndicator(IconPrefab);
         //Debug.Log("PickupAbleABSClass count=" + Objs.Count);
         //range = _range;
     }

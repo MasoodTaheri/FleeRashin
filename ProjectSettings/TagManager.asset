@@ -11,7 +11,21 @@ TagManager:
   - Repair
   - Enemy
   - bullet
-  - LOg1
+  - Bullet
+  - Tower
+  - Vehicle
+  - PlaneRocket
+  - Tree
+  - Rock
+  - Bush
+  - Mountain
+  - Boss
+  - BossGun
+  - Laser
+  - DestroyableObstacle
+  - Flare
+  - Helicopter
+  - CameraBoundary
   layers:
   - Default
   - TransparentFX
@@ -22,14 +36,14 @@ TagManager:
   - 
   - 
   - PlayerBody
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Tower
+  - Boss
+  - BossAmmunition
+  - CanGoThrough
+  - EnemyAmmunition
+  - PlayerAmmunition
+  - SuicidalPlane
+  - DestroyableEnemyAmmunition
   - 
   - 
   - 

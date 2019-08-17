@@ -98,7 +98,7 @@ public class arrowskeys : UiCallFunction
 
     public override void OnPointerDown(PointerEventData eventData)
     {
-        //Debug.Log("OnPointerClick");
+        Debug.Log("OnPointerClick");
         if (playermanager.PlanePlayer != null)
         {
             if (direction == "RightArrow")
@@ -129,6 +129,9 @@ public class arrowskeys : UiCallFunction
 
             if (direction == "Shoot")
                 playermanager.PlanePlayer.EndShoot();
+
+            if (direction == "DropBomb")
+                playermanager.PlanePlayer.DropBomb();
 
 
             //if (direction == "ShootRocket")

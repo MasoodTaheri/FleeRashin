@@ -15,46 +15,50 @@ public interface IShoot
 public class BulletCode : MonoBehaviour,IShoot
 {
     [SerializeField]
-    private float Speed;
+    protected float Speed;
     [SerializeField]
     private float LifeLength;
-    //[SerializeField]
     public Player owner;
     public int damage;
     public GameObject HitParticle;
-
-
-    // Use this for initialization
-    void Start()
+    
+    protected virtual void Start()
     {
         Destroy(this.gameObject, LifeLength);
     }
+    
+    protected virtual void Update()
+    {
+        Move();
+    }
 
-    // Update is called once per frame
-    void Update()
+    protected virtual void Move()
     {
         transform.position += transform.forward * Speed * Time.deltaTime;
     }
-    private void OnCollisionEnter(Collision other)
-    {
-        //Debug.LogFormat("OnCollisionEnter BulletCode {0} hited by {1}", other.gameObject.name, this.gameObject.name);
-        ////Destroy(this.gameObject);
-        ////Destroy(this.gameObject.transform.parent.gameObject);
-        //Destroy(this.gameObject);
-        ////if (other.gameObject.tag == "Playerbody")
-        ////{
-        ////    playermanager.PlanePlayer.destroy();
-        ////    RocketManager.instance.expludeAt(1, transform.position);
-        ////}
-        ////if ((Shooter == "Player") && (other.gameObject.tag == "Enemy"))
-        ////    uiController.Instanse.IncPlaneHit();
-    }
-
+    
     private void OnTriggerEnter(Collider other)
     {
-        //Debug.LogFormat("OnTriggerEnter BulletCode {0} hited by {1}", other.gameObject.name, this.gameObject.name);
+        bool explode = false;
+        DestroyableObject detObj = other.gameObject.GetComponent<DestroyableObject>();
 
-        Destroy(this.gameObject);
+        if (detObj != null)
+        {
+            other.gameObject.GetComponent<DestroyableObject>().ApplyDamage(damage);
+            explode = true;
+        }
+        else if (other.gameObject.layer == 12)
+        {
+            other.gameObject.GetComponent<BossPlaneBigTurretShield>().Reflect();
+            explode = true;
+        }
+
+        if (explode)
+        {
+            Explude();
+            Destroy(this.gameObject);
+        }
+
     }
 
     public void Initalize(Player _owner, float _speed, float _LifeLength
@@ -67,6 +71,26 @@ public class BulletCode : MonoBehaviour,IShoot
         transform.rotation = rot;
         damage = _damage;
 
+    }
+
+    public void Initalize(float _speed, float _LifeLength
+        , Vector3 pos, Quaternion rot, int _damage)
+    {
+        Speed = _speed;
+        LifeLength = _LifeLength;
+        transform.position = pos;
+        transform.rotation = rot;
+        damage = _damage;
+    }
+
+    public void Initalize(float _speed, float _LifeLength
+        , Vector3 pos, Vector3 angle, int _damage)
+    {
+        Speed = _speed;
+        LifeLength = _LifeLength;
+        transform.position = pos;
+        transform.eulerAngles = angle;
+        damage = _damage;
     }
 
     public Player GetOwner()

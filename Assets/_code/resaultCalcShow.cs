@@ -21,11 +21,17 @@ public class resaultCalcShow : MonoBehaviour
 
     public void OnEnable()
     {
-        stars.text = uiController.Instanse.get_Stars().ToString() + "*10";
+        FindObjectOfType<GameOverPanel>().SetResultData(uiController.Instanse.get_Stars().ToString() + "*10",
+            uiController.Instanse.get_CuTime().ToString("f1") + " S",
+            uiController.Instanse.get_Rockethit().ToString() + "*10",
+            uiController.Instanse.get_PlaneHit().ToString() + "*20",
+            PlayerDataClass.calcScore().ToString());
+
+        /*stars.text = uiController.Instanse.get_Stars().ToString() + "*10";
         timer.text = uiController.Instanse.get_CuTime().ToString("f1") + " S";
         Rckets.text = uiController.Instanse.get_Rockethit().ToString() + "*10";
         PlaneHit.text = uiController.Instanse.get_PlaneHit().ToString() + "*20";
-        total.text = PlayerDataClass.calcScore().ToString();
+        total.text = PlayerDataClass.calcScore().ToString();*/
         //doublestarbut.gameObject.SetActive(true);
 
         //doublestarbut.interactable = (uiController.Instanse.get_Stars() > 2);

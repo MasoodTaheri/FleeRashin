@@ -40,7 +40,7 @@ public class WaitingRoomCode : MonoBehaviour
 
 
             object Pready;
-            if (PhotonNetwork.PlayerList[playerid].CustomProperties.TryGetValue(luncher.PLAYER_READY, out Pready))
+            if (PhotonNetwork.PlayerList[playerid].CustomProperties.TryGetValue(PhotonManager.PLAYER_READY, out Pready))
             {
                 Isready = (bool)Pready;
                 //Debug.Log("TryGetValue PLAYER_READY=" + Isready);
@@ -88,7 +88,7 @@ public class WaitingRoomCode : MonoBehaviour
 
     public List<PlayerClass> players = new List<PlayerClass>();
     public Button StartGame;
-    public luncher luncher;
+    public PhotonManager PhotonManager;
     public GameObject WaitRoomPlayeDataPrefab;
     public GameObject ContentRoot;
     public RectTransform contentRectTransform;
@@ -111,7 +111,7 @@ public class WaitingRoomCode : MonoBehaviour
     public void OnEnable()
     {
         ClearData();
-        Hashtable props = new Hashtable() { { luncher.PLAYER_READY, false } };
+        Hashtable props = new Hashtable() { { PhotonManager.PLAYER_READY, false } };
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
     }
     public void ClearData()
@@ -218,7 +218,7 @@ public class WaitingRoomCode : MonoBehaviour
     public void Button_ready(int id)
     {
         Debug.Log("Button_ready argument=" + id);
-        Hashtable props = new Hashtable() { { luncher.PLAYER_READY, true } };
+        Hashtable props = new Hashtable() { { PhotonManager.PLAYER_READY, true } };
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
         players[id].Buttonready.gameObject.SetActive(false);
         players[id].StatePlayer.gameObject.SetActive(true);

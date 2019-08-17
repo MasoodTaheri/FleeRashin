@@ -143,10 +143,14 @@ public class AIManager : MonoBehaviourPunCallbacks
     public static AIManager instance;
     public bool AllowGenerateAI;
 
+    private void Awake()
+    {
+        instance = this;
+    }
+
     void Start()
     {
         //Instance = this;
-        instance = this;
         planeColorClass = new PlaneColorClass();
     }
 

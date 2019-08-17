@@ -12,9 +12,7 @@ public class flareController : MonoBehaviour
         //transform.rotation = Quaternion.Euler(0,
         //    Mathf.Sign(Random.Range(-2.0f, 2.0f)) * 
         //    /*Random.Range(20, 50)*/120, 0);
-        transform.Rotate(new Vector3(0,
-    Mathf.Sign(Random.Range(-2.0f, 2.0f)) *
-    120, 0));
+        transform.Rotate(new Vector3(0, Mathf.Sign(Random.Range(-2.0f, 2.0f)) * 120, 0));
 
         Destroy(this.gameObject, lifetime);
     }
@@ -24,5 +22,19 @@ public class flareController : MonoBehaviour
     {
         rb.velocity = transform.forward * forwardSpeed;
         rb.angularVelocity = Vector3.zero;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Rocket")
+        {
+            other.GetComponent<AntiaircraftChaserRocket>().SetFlare(gameObject);
+        }
+
+        if (other.tag == "PlaneRocket")
+        {
+            if(other.GetComponent<BossPlaneRocket>() != null)
+            other.GetComponent<BossPlaneRocket>().flare = gameObject;
+        }
     }
 }

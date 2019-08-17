@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class gun : MonoBehaviour //MonoBehaviourPun, IPunObservable
+public class gun : MonoBehaviour 
 {
     public PhotonView pv;
     public GameObject Bullet;
@@ -20,56 +20,36 @@ public class gun : MonoBehaviour //MonoBehaviourPun, IPunObservable
     //private int gunId = 0;
     public DefaultPlayerPlane plane;
     public int damage;
+    float firstClickTime;
+    float secondClickTime;
 
-    // Use this for initialization
+    GameObject target;
+    [HideInInspector]
+    public bool forceShoot;
+
     void Start()
     {
-        //base.Start();
-        //pv = GetComponent<PhotonView>();
-        //gunobj = new MachineGun() { bulletPrefab = Bullet, lifeLength = 8, speed = 5 };
-        //gunobj = new MachineGun() { bulletPrefab = Bullet, lifeLength = bulletLifeTime, speed = bulletSpeed };
-        //gunobj.Spawner = new List<GameObject>(gunPosObject);
     }
-
-
-
-
-    // Update is called once per frame
+    
     void Update()
     {
-        //Debug.Log("Shoot " + shoot + "IsControllable=" + plane.IsControllable()
-        //    + "  by " + this.gameObject.name);
-
         if (!plane.IsControllable())
             return;
-
-
-        //Debug.Log("is me " + !(plane is EnemyPlane) + "  by " + this.gameObject.name);
-
+        
         if (!PhotonNetwork.IsConnected)
             return;
-
-
-        //if (plane.IsInturn())
-        //{
-        //    //Debug.Log("Impossible to shoot for" + plane.gameObject.name);
-        //    return;
-        //}
-
-        //if (Input.GetKey(KeyCode.Q))
-        if (shoot || /*DetectDoubleClick() || */
-            (!(plane is EnemyPlane) && Input.GetKey(KeyCode.LeftControl)))
+        
+        if (shoot || (!(plane is EnemyPlane) && Input.GetKey(KeyCode.LeftControl)) || forceShoot)
         {
             t0 += Time.deltaTime;
             if (t0 > Shootdelay)
             {
-                firebullet();
+                FireBullet();
             }
         }
-        //gunobj.Update();
     }
 
-    private void firebullet()
+    private void FireBullet()
     {
         pv.RPC("Fire", RpcTarget.All);
         t0 = 0;
@@ -80,33 +60,37 @@ public class gun : MonoBehaviour //MonoBehaviourPun, IPunObservable
     public void Fire(PhotonMessageInfo info)
     {
         float lag = (float)(PhotonNetwork.Time - info.SentServerTime);
+        
+        if (target == null)
+        {
+            for (int i = 0; i < gunPosObject.Count; i++)
+                gunPosObject[i].transform.rotation = transform.rotation;
+        }
+        else
+        {
+            Vector3 lookPos;
+            for (int i = 0; i < gunPosObject.Count; i++)
+            {
+                lookPos = CorrectPosition(target.transform.position) + 2 * (CorrectPosition(target.transform.position) - transform.position).normalized;
+                Rigidbody rb = target.GetComponent<Rigidbody>();
+                lookPos += (rb != null && !rb.isKinematic && rb.velocity.magnitude > 0) ? rb.velocity * (Vector3.Distance(CorrectPosition(target.transform.position), transform.position) / bulletSpeed) : Vector3.zero;
+                gunPosObject[i].transform.LookAt(lookPos);
+                //gunPosObject[i].transform.LookAt(CorrectPosition(target.transform.position) + ((target.GetComponent<Rigidbody>() != null && !target.GetComponent<Rigidbody>().isKinematic) ? target.transform.forward : 2 * (CorrectPosition(target.transform.position) - transform.position).normalized));
+            }
+        }
 
         GameObject Bullet1 = Instantiate(Bullet) as GameObject;
         Bullet1.GetComponent<BulletCode>().Initalize(pv.Owner, bulletSpeed, bulletLifeTime, gunPosObject[0].transform.position, gunPosObject[0].transform.rotation, Mathf.Abs(lag), damage);
-
         Bullet1 = Instantiate(Bullet) as GameObject;
         Bullet1.GetComponent<BulletCode>().Initalize(pv.Owner, bulletSpeed, bulletLifeTime, gunPosObject[1].transform.position, gunPosObject[1].transform.rotation, Mathf.Abs(lag), damage);
-        //gunPosObject[gunId % 2].transform.rotation);
 
     }
+
     public void Shoot(bool enable)
     {
-        //Debug.Log("Shoot set to " + enable + "  by " + this.gameObject.name);
-
         shoot = enable;
-        //firebullet();
-
-        //if (plane.IsInturn())
-        //{
-        //    Debug.Log("Impossible to shoot for" + plane.gameObject.name);
-        //    shoot = false;
-        //}
-
     }
 
-
-    float firstClickTime;
-    float secondClickTime;
     bool DetectDoubleClick()
     {
 
@@ -141,23 +125,14 @@ public class gun : MonoBehaviour //MonoBehaviourPun, IPunObservable
         return false;
     }
 
-    //public override void Shoot(int SpawnerId, string shooter = "")
-    //{
-    //    throw new System.NotImplementedException();
-    //}
+    Vector3 CorrectPosition(Vector3 input)
+    {
+        input = new Vector3(input.x, transform.position.y, input.z);
+        return input;
+    }
 
-
-    //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    //{
-    //    //if (stream.IsWriting)
-    //    //{
-    //    //    // We own this player: send the others our data
-    //    //    stream.SendNext(IsFiring);
-    //    //}
-    //    //else
-    //    //{
-    //    //    // Network player, receive data
-    //    //    this.IsFiring = (bool)stream.ReceiveNext();
-    //    //}
-    //}
+    public void SetTarget(GameObject _target)
+    {
+        target = _target;
+    }
 }

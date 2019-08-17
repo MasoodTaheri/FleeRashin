@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
@@ -75,9 +76,9 @@ public class playermanager : MonoBehaviour, IOnEventCallback
     public GameObject playerPrefab;
     //public GameObject Enemy;
     //public GameObject player;
-    public GameObject MainMenu;
-    public GameObject ingameMenu;
-    public GameObject ResaultMenu;
+    //public GameObject MainMenu;
+    //public GameObject ingameMenu;
+    //public GameObject ResaultMenu;
     public bool outofgame = true;
     public AudioSource music;
     public List<AudioClip> InGameMusic;
@@ -86,7 +87,8 @@ public class playermanager : MonoBehaviour, IOnEventCallback
     public GameObject puncoin;
     public static playermanager Instance;
     public PlaneColorClass planeColorClass;
-
+    public int AICount;
+    public bool isGameStarted;
 
 
 
@@ -101,6 +103,20 @@ public class playermanager : MonoBehaviour, IOnEventCallback
     {
         Instance = this;
         planeColorClass = new PlaneColorClass();
+        SceneManager.sceneLoaded += CustomOnLevelWasLoaded;
+        startGameEvent();
+    }
+
+    bool dontShowGameOverPanel = false;
+    void CustomOnLevelWasLoaded(Scene scene, LoadSceneMode loadSceneMode)
+    {
+        dontShowGameOverPanel = true;
+        StartCoroutine(CanShowGameOverPanel());
+    }
+    IEnumerator CanShowGameOverPanel()
+    {
+        yield return new WaitForSeconds(3f);
+        dontShowGameOverPanel = false;
     }
 
     // Update is called once per frame
@@ -109,7 +125,7 @@ public class playermanager : MonoBehaviour, IOnEventCallback
         if (PlanePlayer == null)
         {
             //Debug.Log("11111111");
-            if (!outofgame)
+            if (isGameStarted && !outofgame)
             {
                 //Debug.Log("EndOfRound_event calling");
                 //PhotonNetwork.RaiseEvent(EndOfRound_event, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }
@@ -149,7 +165,7 @@ public class playermanager : MonoBehaviour, IOnEventCallback
             if (PlanePlayer.readytodestroy)
                 PlanePlayer = null;
             else
-                PlanePlayer.Update();
+                ;// PlanePlayer.Update();
         }
 
         if (Input.GetKeyUp(KeyCode.Q))
@@ -171,19 +187,20 @@ public class playermanager : MonoBehaviour, IOnEventCallback
         //PhotonNetwork.CurrentRoom.IsVisible = false;
         //startGameEvent();
         //PhotonNetwork.JoinRandomRoom();
-        GetComponent<luncher>().Connect();
+        isGameStarted = true;
+        //GetComponent<PhotonManager>().Connect();
     }
 
-    public void startGameOffline()
-    {
-        //PhotonNetwork.Disconnect();
-        PhotonNetwork.OfflineMode = true;
-        //PhotonNetwork.JoinRandomRoom();
-    }
+    //public void startGameOffline()
+    //{
+    //    //PhotonNetwork.Disconnect();
+    //    isGameStarted = true;
+    //    PhotonNetwork.OfflineMode = true;
+    //    //PhotonNetwork.JoinRandomRoom();
+    //}
 
     public void startGameEvent()
     {
-
         //Debug.Log("startGameEvent function ");
 
         if (PlanePlayer != null)
@@ -194,10 +211,10 @@ public class playermanager : MonoBehaviour, IOnEventCallback
         GetComponent<Pickupmanager2>().GenerateItem();
 
 
-        uiController.Instanse.mainmenu.SetActive(false);
+        /*uiController.Instanse.mainmenu.SetActive(false);
         uiController.Instanse.Ingame.SetActive(true);
         uiController.Instanse.Powerup.SetActive(true);
-        uiController.Instanse.waitingroom.SetActive(false);
+        uiController.Instanse.waitingroom.SetActive(false);*/
 
         GetComponent<RocketManager>().allowRockets = true;
 
@@ -208,28 +225,38 @@ public class playermanager : MonoBehaviour, IOnEventCallback
         PlanePlayer.rotateSpeed = rotateSpeed;
         string cl = planeColorClass.GetRandomColorName();
         PlanePlayer.GetComponent<PhotonView>().RPC("SetColor", RpcTarget.AllBufferedViaServer, cl);
+        Camera.main.GetComponent<CameraMovement>().AddTarget(PlanePlayer.gameObject);
         //Debug.Log("PlanePlayer color set to" + cl);
 
 
-        music.clip = InGameMusic[Random.Range(0, InGameMusic.Count)];
+        /*music.clip = InGameMusic[Random.Range(0, InGameMusic.Count)];
         music.Play();
         if (PlayerDataClass.Flare <= 2)
             PlayerDataClass.Flare = 3;
 
         outofgame = false;
-        uiController.Instanse.resetUIelements();
+        uiController.Instanse.resetUIelements();*/
 
         //if (PhotonNetwork.IsMasterClient)
         //    for (int i = 0; i < AICount; i++)
         //    {
         //        GeneratePlane(Enemy, FindSpawnPoint(), i);
         //    }
+
         AIManager.StartGeneratingAI();
     }
 
     private Vector3 FindSpawnPoint()
     {
-        Vector3 spawnpoint;
+        //if (FindObjectOfType<LevelManager>() != null)
+
+        //if (LevelManager.Instance == null)
+        //    Debug.LogError("No \"LevelManager\" was found.");
+
+        //return LevelManager.Instance.startingPoint;
+
+
+        Vector3 spawnpoint;// = new Vector3(50f, -6f, -8f);
         if (Generate_near)
             spawnpoint = new Vector3(Random.Range(-3.0f, 3.0f), -6, Random.Range(-3.0f, 3.0f));
         else
@@ -258,8 +285,13 @@ public class playermanager : MonoBehaviour, IOnEventCallback
     {
         GetComponent<RocketManager>().allowRockets = false;
         yield return new WaitForSeconds(2.5f);
-        ingameMenu.SetActive(false);
-        ResaultMenu.SetActive(true);
+        /*ingameMenu.SetActive(false);
+        ResaultMenu.SetActive(true);*/
+        if (!dontShowGameOverPanel)
+        {
+            FindObjectOfType<UIManager>().ChangePanel(BasePanel.PanelType.GameOver);
+            outofgame = false;
+        }
         //yield return new WaitForSeconds(0.5f);
         //IAPandAD.showad("");
 
@@ -306,7 +338,7 @@ public class playermanager : MonoBehaviour, IOnEventCallback
 
     private void GameFinished()
     {
-        music.Stop();
+        //music.Stop();
         StartCoroutine(result_show());
         //outofgame = true;
         if (PlayerPrefs.GetInt("LoosecountForAd", 0) > 6)
@@ -333,7 +365,5 @@ public class playermanager : MonoBehaviour, IOnEventCallback
     {
         PhotonNetwork.RemoveCallbackTarget(this);
     }
-
-
 
 }

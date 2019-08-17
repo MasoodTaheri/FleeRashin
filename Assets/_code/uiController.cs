@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections;
 
@@ -34,13 +35,19 @@ public class uiController : MonoBehaviour
     public int get_Stars() { return Stars; }
     public float get_Rockethit() { return Rockethit; }
     public float get_PlaneHit() { return PlaneHit; }
-
+    InGamePanel inGamePanel;
     // Use this for initialization
     void Start()
     {
         pm = GetComponent<playermanager>();
         Instanse = this;
         t = 0;
+        SceneManager.sceneLoaded += CustomOnLevelWasLoaded;
+    }
+
+    private void CustomOnLevelWasLoaded(Scene scene, LoadSceneMode loadSceneMode)
+    {
+         CuTime = 0;
     }
 
     // Update is called once per frame
@@ -49,7 +56,15 @@ public class uiController : MonoBehaviour
         if (!pm.outofgame)
         {
             CuTime = Time.time - t;
-            timer.text = CuTime.ToString("f1");
+            if (inGamePanel == null)
+            {
+                inGamePanel = FindObjectOfType<InGamePanel>();
+            }
+            else
+            {
+                inGamePanel.SetTime(CuTime.ToString("f1"));
+            }
+            //timer.text = CuTime.ToString("f1");
         }
 
     }
